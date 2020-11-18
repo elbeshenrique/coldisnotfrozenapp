@@ -22,7 +22,9 @@ abstract class _AirConditionerStoreBase with Store {
   }
 
   @action
-  void setAirConditioner(AirConditionerModel value) => airConditioner = value;
+  void setAirConditioner(AirConditionerModel value) {
+    airConditioner = value;
+  }
 
   Future getFirstAirConditionerConfig() async {
     var dio = Modular.get<Dio>();
