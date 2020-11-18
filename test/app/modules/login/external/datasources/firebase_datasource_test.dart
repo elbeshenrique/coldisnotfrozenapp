@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guard_class/app/modules/login/domain/entities/logged_user.dart';
 import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/login/external/datasources/firebase_datasource.dart';
@@ -40,10 +41,15 @@ class FirebaseAuthMock extends Mock implements FirebaseAuth {
   }
 }
 
+class GoogleSignInMock extends Mock implements GoogleSignIn {
+
+}
+
 final credential = AuthCredentialMock();
 final authException = AuthExceptionMock();
 main() {
   final auth = FirebaseAuthMock();
+  final googleSignIn = GoogleSignInMock();
   final firebaseUser = FirebaseUserMock();
   final user = const LoggedUser(
     name: "Jacob",
@@ -52,7 +58,7 @@ main() {
   );
 
   final authResult = AuthResultMock();
-  final datasource = FirebaseDataSourceImpl(auth);
+  final datasource = FirebaseDataSourceImpl(auth, googleSignIn);
 
   setUpAll(() {
     when(firebaseUser.displayName).thenReturn("Jacob");

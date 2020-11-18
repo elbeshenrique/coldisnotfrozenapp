@@ -7,7 +7,7 @@ part of 'firebase_datasource.dart';
 // **************************************************************************
 
 final $FirebaseDataSourceImpl = BindInject(
-  (i) => FirebaseDataSourceImpl(i<FirebaseAuth>()),
+  (i) => FirebaseDataSourceImpl(i<FirebaseAuth>(), i<GoogleSignIn>()),
   singleton: false,
   lazy: true,
 );

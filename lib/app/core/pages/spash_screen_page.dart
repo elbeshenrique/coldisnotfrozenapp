@@ -7,7 +7,7 @@ class SplashScreenPage extends StatelessWidget {
     Modular.get<AuthStore>().checkLogin().then((v) {
       return Future.delayed(Duration(seconds: 1));
     }).then((value) {
-      Modular.to.pushNamedAndRemoveUntil("/home", (_) => false);
+      Modular.to.pushNamedAndRemoveUntil("/login", (_) => false);
     });
   }
 

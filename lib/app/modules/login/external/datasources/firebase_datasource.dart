@@ -12,10 +12,10 @@ part 'firebase_datasource.g.dart';
 
 @Injectable(singleton: false)
 class FirebaseDataSourceImpl implements LoginDataSource {
-  final FirebaseAuth auth;  
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth auth;
+  final GoogleSignIn googleSignIn;
 
-  FirebaseDataSourceImpl(this.auth);
+  FirebaseDataSourceImpl(this.auth, this.googleSignIn);
 
   @override
   Future<UserModel> loginEmail({String email, String password}) async {
@@ -28,22 +28,51 @@ class FirebaseDataSourceImpl implements LoginDataSource {
     );
   }
 
+  Future<GoogleSignInAccount> getSignedUserOrSignIn(GoogleSignIn googleSignIn) async {
+    final isSignedIn = await googleSignIn.isSignedIn();
+    if (!isSignedIn) {
+      return await googleSignIn.signIn();
+    }
+
+    if (googleSignIn.currentUser != null) {
+      return googleSignIn.currentUser;
+    }
+
+    return await googleSignIn.signIn();
+  }
+
   @override
   Future<UserModel> loginGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAccount googleSignInAccount = await getSignedUserOrSignIn(googleSignIn);
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+    if (googleSignInAccount == null) {
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
     );
 
-    final FirebaseUser user = (await auth.signInWithCredential(credential)).user;
-    
+    AuthResult authResult;
+    try {
+      authResult = await auth.signInWithCredential(authCredential);
+    } catch (authResultException) {
+      final isSignedIn = await googleSignIn.isSignedIn();
+      if (isSignedIn) {
+        await googleSignIn.disconnect();
+      }
+
+      throw authResultException;
+    }
+
+    final FirebaseUser firebaseUser = authResult.user;
+
     return UserModel(
-      name: user.displayName,
-      phoneNumber: user.phoneNumber,
-      email: user.email,
+      name: firebaseUser.displayName,
+      phoneNumber: firebaseUser.phoneNumber,
+      email: firebaseUser.email,
     );
   }
 
@@ -99,6 +128,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
   @override
   Future<void> logout() async {
-    return await auth.signOut();
+    await auth.signOut();
+    await googleSignIn.disconnect();
   }
 }

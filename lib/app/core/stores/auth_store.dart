@@ -39,6 +39,7 @@ abstract class _AuthStoreBase with Store {
       asuka.showSnackBar(SnackBar(content: Text(l.message)));
     }, (r) {
       setUser(null);
+      Modular.to.pushReplacementNamed("/login");
     });
   }
 }

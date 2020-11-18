@@ -10,9 +10,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends ModularState<LoginPage, LoginController> {
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    var buildValue = Scaffold(
       appBar: AppBar(
         title: Text("Login"),
       ),
@@ -22,48 +23,10 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
-                onChanged: controller.setEmail,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                onChanged: controller.setPassword,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Password",
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Modular.link.pushNamed("/phone");
-                },
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    "Phone Login",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Observer(builder: (_) {
                 return RaisedButton(
-                  onPressed: controller.isValid ? controller.enterEmail : null,
-                  child: Text("ENTER"),
+                  onPressed: controller.isValid ? controller.loginWithGoogle : null,
+                  child: Text("Login with Google"),
                 );
               })
             ],
@@ -71,5 +34,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
         ),
       ),
     );
+
+    return buildValue;
   }
 }

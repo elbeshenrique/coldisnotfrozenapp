@@ -32,9 +32,11 @@ packages:
   asuka:
     dependency: "direct main"
     description:
-      path: "../../Flutterando/asuka"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "5105b1ae6c5e0440e5c5018191263a91a3c8ec58"
+      url: "https://github.com/Flutterando/asuka.git"
+    source: git
     version: "1.0.4"
   async:
     dependency: transitive
