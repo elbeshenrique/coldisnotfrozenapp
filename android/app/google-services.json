@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "321438516705",
+    "firebase_url": "https://coldisnotfrozen.firebaseio.com",
+    "project_id": "coldisnotfrozen",
+    "storage_bucket": "coldisnotfrozen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321438516705:android:6ba9d0d306c14e87013ea0",
+        "android_client_info": {
+          "package_name": "com.example.guard_class"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "321438516705-qc085sjkerd5cuu556924tv55k7ipmeq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.guard_class",
+            "certificate_hash": "c690f30fc88eac91a3dd34957d882929307459de"
+          }
+        },
+        {
+          "client_id": "321438516705-k45uojah4s7g30j73mo9dg615ree5ijp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.guard_class",
+            "certificate_hash": "caed6934c5014ba253789604123b6754f0c83366"
+          }
+        },
+        {
+          "client_id": "321438516705-f2hn89aoa2gnvu1pd23n5pvp6dbp9fr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClh2ICSPOsmpRCq4lOQYshYQzbVFTLOJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "321438516705-f2hn89aoa2gnvu1pd23n5pvp6dbp9fr6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
