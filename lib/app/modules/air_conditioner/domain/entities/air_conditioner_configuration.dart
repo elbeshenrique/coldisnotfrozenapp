@@ -1,4 +1,4 @@
-abstract class AirConditioner {
+abstract class AirConditionerConfiguration {
   double get offset;
   int get setpoint;
   bool get isOn;

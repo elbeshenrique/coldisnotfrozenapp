@@ -31,13 +31,13 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
       Atom(name: '_AirConditionerStoreBase.airConditioner');
 
   @override
-  AirConditionerModel get airConditioner {
+  AirConditionerConfigurationModel get airConditioner {
     _$airConditionerAtom.reportRead();
     return super.airConditioner;
   }
 
   @override
-  set airConditioner(AirConditionerModel value) {
+  set airConditioner(AirConditionerConfigurationModel value) {
     _$airConditionerAtom.reportWrite(value, super.airConditioner, () {
       super.airConditioner = value;
     });
@@ -47,11 +47,11 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
       ActionController(name: '_AirConditionerStoreBase');
 
   @override
-  void setAirConditioner(AirConditionerModel value) {
+  void setAirConditionerConfigurationList(AirConditionerConfigurationModel value) {
     final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
         name: '_AirConditionerStoreBase.setAirConditioner');
     try {
-      return super.setAirConditioner(value);
+      return super.setAirConditionerConfigurationList(value);
     } finally {
       _$_AirConditionerStoreBaseActionController.endAction(_$actionInfo);
     }

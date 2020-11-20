@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/core/stores/ar_conditioner_store.dart';
 import 'package:guard_class/app/core/stores/auth_store.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -15,50 +16,95 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final authStore = Modular.get<AuthStore>();
   final airConditionerStore = Modular.get<AirConditionerStore>();
+  final NumberFormat numberFormatter = NumberFormat("0.##", "pt-br");
 
-  _HomePageState() {}
+  _HomePageState();
 
-  Widget getMainScreen() {
+  Widget getMainScreen(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Expanded(
           child: Observer(
-            builder: (_) => ListView.builder(
-                itemCount: airConditionerStore.airConditioner != null ? 1 : 0,
-                itemBuilder: (context, index) {
-                  var airConditioner = airConditionerStore.airConditioner;
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    width: double.maxFinite,
-                    child: Card(
-                      elevation: 5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(width: 2.0, color: Colors.green),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(7),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: airConditioner != null ? <Widget>[
-                                  Text("Is ON? ${airConditioner?.isOn}"),
-                                  Text("Offset ${airConditioner?.offset}"),
-                                  Text("Setpoint ${airConditioner?.setpoint}"),
-                                  Text("Use Remote? ${airConditioner?.useRemote}"),
-                            ] : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
+            builder: (_) => buildAirConditionerListView(context),
           ),
         ),
       ],
+    );
+  }
+
+  buildAirConditionerListView(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: airConditionerStore.airConditioner != null ? 1 : 0,
+      itemBuilder: (BuildContext context, int index) {
+        var airConditioner = airConditionerStore.airConditioner;
+
+        return Container(
+          padding: EdgeInsets.all(5),
+          child: Card(
+            elevation: 5,
+            child: ClipPath(
+              clipper: ShapeBorderClipper(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: Colors.green,
+                      width: 5,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Stack(
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.lightbulb_outline, color: Theme.of(context).accentColor, size: 17.0),
+                              SizedBox(width: 10.0),
+                              Text(airConditioner?.isOn == true ? "Ligado" : "Desligado", style: TextStyle(fontSize: 15.0)),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.settings_ethernet, color: Theme.of(context).accentColor, size: 17.0),
+                              SizedBox(width: 10.0),
+                              Text("${numberFormatter.format(airConditioner?.offset)}ºC de variação", style: TextStyle(fontSize: 15.0)),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.ac_unit, color: Theme.of(context).accentColor, size: 17.0),
+                              SizedBox(width: 10.0),
+                              Text("${numberFormatter.format(airConditioner?.setpoint)}ºC de temperatura alvo", style: TextStyle(fontSize: 15.0)),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.router, color: Theme.of(context).accentColor, size: 17.0),
+                              SizedBox(width: 10.0),
+                              Text(airConditioner?.useRemote == true ? "Usa remoto" : "Não usa remoto", style: TextStyle(fontSize: 15.0)),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -84,7 +130,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Center(
-        child: getMainScreen(),
+        child: getMainScreen(context),
       ),
     );
   }
