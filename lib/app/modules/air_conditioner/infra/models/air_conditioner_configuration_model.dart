@@ -3,15 +3,23 @@ import 'dart:convert';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
 
 class AirConditionerConfigurationModel implements AirConditionerConfiguration {
+  final String id;
   final double offset;
   final int setpoint;
   final bool isOn;
   final bool useRemote;
 
-  const AirConditionerConfigurationModel({this.offset, this.setpoint, this.isOn, this.useRemote});
+  const AirConditionerConfigurationModel({
+    this.id,
+    this.offset,
+    this.setpoint,
+    this.isOn,
+    this.useRemote,
+  });
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'offset': offset,
       'setpoint': setpoint,
       'isOn': isOn,
@@ -23,6 +31,7 @@ class AirConditionerConfigurationModel implements AirConditionerConfiguration {
     if (map == null) return null;
 
     return AirConditionerConfigurationModel(
+      id: map['id'],
       offset: map['offset'],
       setpoint: map['setpoint'],
       isOn: map['isOn'],

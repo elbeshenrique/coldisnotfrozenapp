@@ -20,6 +20,12 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState();
 
+  @override
+  initState() {
+    super.initState();
+    airConditionerStore.getConfigurationList();
+  }
+
   Widget getMainScreen(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -36,9 +42,40 @@ class _HomePageState extends State<HomePage> {
   buildAirConditionerListView(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: airConditionerStore.airConditioner != null ? 1 : 0,
+      itemCount: airConditionerStore.airConditionerConfigurationList?.length ?? 0,
       itemBuilder: (BuildContext context, int index) {
-        var airConditioner = airConditionerStore.airConditioner;
+        var airConditionerItemModel = airConditionerStore.airConditionerConfigurationList[index];
+        var airConditionerConfigurationModel = airConditionerItemModel.configuration;
+        var airConditionerLastLog = airConditionerItemModel.lastLog;
+
+        String isOnText;
+        String offsetText;
+        String setpointText;
+        String useRemoteText;
+        String temperatureText;
+
+        bool isOn = false;
+        double temperature = 0;
+
+        if (airConditionerLastLog != null) {
+          isOnText = airConditionerLastLog?.isOn == true ? "Ligado" : "Desligado";
+          offsetText = "${numberFormatter.format(airConditionerLastLog?.offset)}ºC de variação";
+          setpointText = "${numberFormatter.format(airConditionerLastLog?.setpoint)}ºC de temperatura alvo";
+          useRemoteText = airConditionerLastLog?.useRemote == true ? "Usa remoto" : "Não usa remoto";
+          temperatureText = airConditionerLastLog != null ? "${numberFormatter.format(airConditionerLastLog?.localTemperature)}ºC" : "";
+
+          isOn = airConditionerLastLog.isOn;
+          temperature = airConditionerLastLog.localTemperature;
+        } else {
+          isOnText = airConditionerConfigurationModel?.isOn == true ? "Ligado" : "Desligado";
+          offsetText = "${numberFormatter.format(airConditionerConfigurationModel?.offset)}ºC de variação";
+          setpointText = "${numberFormatter.format(airConditionerConfigurationModel?.setpoint)}ºC de temperatura alvo";
+          useRemoteText = airConditionerConfigurationModel?.useRemote == true ? "Usa remoto" : "Não usa remoto";
+          temperatureText = "";
+        }
+
+        Color leftCardBorderColor = isOn ? Colors.green : Colors.red;
+        Color temperatureBorderColor = temperature <= 0 ? Colors.green : Colors.red;
 
         return Container(
           padding: EdgeInsets.all(5),
@@ -52,23 +89,30 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                   border: Border(
                     left: BorderSide(
-                      color: Colors.green,
+                      color: leftCardBorderColor,
                       width: 5,
                     ),
                   ),
                 ),
                 child: Container(
                   padding: EdgeInsets.all(10),
-                  child: Stack(
-                    children: <Widget>[
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
                             children: <Widget>[
+                              Text(airConditionerConfigurationModel.id, style: TextStyle(fontSize: 9.0))
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            children: <Widget>[
                               Icon(Icons.lightbulb_outline, color: Theme.of(context).accentColor, size: 17.0),
                               SizedBox(width: 10.0),
-                              Text(airConditioner?.isOn == true ? "Ligado" : "Desligado", style: TextStyle(fontSize: 15.0)),
+                              Text(isOnText, style: TextStyle(fontSize: 15.0)),
                             ],
                           ),
                           SizedBox(height: 10.0),
@@ -76,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Icon(Icons.settings_ethernet, color: Theme.of(context).accentColor, size: 17.0),
                               SizedBox(width: 10.0),
-                              Text("${numberFormatter.format(airConditioner?.offset)}ºC de variação", style: TextStyle(fontSize: 15.0)),
+                              Text(offsetText, style: TextStyle(fontSize: 15.0)),
                             ],
                           ),
                           SizedBox(height: 10.0),
@@ -84,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Icon(Icons.ac_unit, color: Theme.of(context).accentColor, size: 17.0),
                               SizedBox(width: 10.0),
-                              Text("${numberFormatter.format(airConditioner?.setpoint)}ºC de temperatura alvo", style: TextStyle(fontSize: 15.0)),
+                              Text(setpointText, style: TextStyle(fontSize: 15.0)),
                             ],
                           ),
                           SizedBox(height: 10.0),
@@ -92,11 +136,25 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Icon(Icons.router, color: Theme.of(context).accentColor, size: 17.0),
                               SizedBox(width: 10.0),
-                              Text(airConditioner?.useRemote == true ? "Usa remoto" : "Não usa remoto", style: TextStyle(fontSize: 15.0)),
+                              Text(useRemoteText, style: TextStyle(fontSize: 15.0)),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            children: <Widget>[
+                              Text(airConditionerLastLog?.createdAt?.toString() ?? "", style: TextStyle(fontSize: 9.0))
                             ],
                           ),
                         ],
-                      )
+                      ),
+                      Text(
+                        temperatureText,
+                        style: TextStyle(
+                          fontSize: 40.0,
+                          fontWeight: FontWeight.bold,
+                          color: temperatureBorderColor,
+                        ),
+                      ),
                     ],
                   ),
                 ),

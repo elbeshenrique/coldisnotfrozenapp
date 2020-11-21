@@ -27,29 +27,38 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
               name: '_AirConditionerStoreBase.isLoaded'))
           .value;
 
-  final _$airConditionerAtom =
-      Atom(name: '_AirConditionerStoreBase.airConditioner');
+  final _$airConditionerConfigurationListAtom =
+      Atom(name: '_AirConditionerStoreBase.airConditionerConfigurationList');
 
   @override
-  AirConditionerConfigurationModel get airConditioner {
-    _$airConditionerAtom.reportRead();
-    return super.airConditioner;
+  ObservableList<AirConditionerItemModel> get airConditionerConfigurationList {
+    _$airConditionerConfigurationListAtom.reportRead();
+    return super.airConditionerConfigurationList;
   }
 
   @override
-  set airConditioner(AirConditionerConfigurationModel value) {
-    _$airConditionerAtom.reportWrite(value, super.airConditioner, () {
-      super.airConditioner = value;
+  set airConditionerConfigurationList(
+      ObservableList<AirConditionerItemModel> value) {
+    _$airConditionerConfigurationListAtom
+        .reportWrite(value, super.airConditionerConfigurationList, () {
+      super.airConditionerConfigurationList = value;
     });
+  }
+
+  final _$getDataAsyncAction = AsyncAction('_AirConditionerStoreBase.getData');
+
+  @override
+  Future<void> getData() {
+    return _$getDataAsyncAction.run(() => super.getData());
   }
 
   final _$_AirConditionerStoreBaseActionController =
       ActionController(name: '_AirConditionerStoreBase');
 
   @override
-  void setAirConditionerConfigurationList(AirConditionerConfigurationModel value) {
+  void setAirConditionerConfigurationList(List<AirConditionerItemModel> value) {
     final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
-        name: '_AirConditionerStoreBase.setAirConditioner');
+        name: '_AirConditionerStoreBase.setAirConditionerConfigurationList');
     try {
       return super.setAirConditionerConfigurationList(value);
     } finally {
@@ -60,7 +69,7 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
   @override
   String toString() {
     return '''
-airConditioner: ${airConditioner},
+airConditionerConfigurationList: ${airConditionerConfigurationList},
 isLoaded: ${isLoaded}
     ''';
   }

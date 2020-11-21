@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
-import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
 import 'package:mobx/mobx.dart';
 
 part 'ar_conditioner_store.g.dart';
@@ -10,11 +10,10 @@ part 'ar_conditioner_store.g.dart';
 class AirConditionerStore = _AirConditionerStoreBase with _$AirConditionerStore;
 
 abstract class _AirConditionerStoreBase with Store {
-  
   _AirConditionerStoreBase();
 
   @observable
-  ObservableList<AirConditionerConfigurationModel> airConditionerConfigurationList = ObservableList<AirConditionerConfigurationModel>();
+  ObservableList<AirConditionerItemModel> airConditionerConfigurationList = ObservableList<AirConditionerItemModel>();
 
   @computed
   bool get isLoaded {
@@ -22,20 +21,27 @@ abstract class _AirConditionerStoreBase with Store {
   }
 
   @action
-  void setAirConditionerConfigurationList(ObservableList<AirConditionerConfigurationModel> value) {
-    airConditionerConfigurationList = value;
+  void setAirConditionerConfigurationList(List<AirConditionerItemModel> value) {
+    airConditionerConfigurationList = value.asObservable();
   }
 
   @action
   Future<void> getData() async {
-    var clienteResult = await repository.getAllClientes();
-    data = clienteResult?.asObservable();
+    // var clienteResult = await repository.getAllClientes();
+    // data = clienteResult?.asObservable();
   }
 
-  Future getFirstAirConditionerConfig() async {
+  Future getConfigurationList() async {
     var dio = Modular.get<Dio>();
     var dataSource = AirConditionerHasuraDataSource(dio);
-    var airConditionerModel = await dataSource.getConfig("467683a1-2212-4113-bc05-631d32cde51f");
-    setAirConditionerConfigurationList(airConditionerModel);
+    var airConditionerConfigurationModelList = await dataSource.getConfigurationList();
+    var airConditionerItemModelList = airConditionerConfigurationModelList.map((item) => AirConditionerItemModel(configuration: item)).toList();
+    
+    for(var airConditionerItemModel in airConditionerItemModelList) {
+      var airConditionerLog = await dataSource.getLastLog(airConditionerItemModel.configuration.id);  
+      airConditionerItemModel.lastLog = airConditionerLog;
+    };
+    
+    setAirConditionerConfigurationList(airConditionerItemModelList);
   }
 }

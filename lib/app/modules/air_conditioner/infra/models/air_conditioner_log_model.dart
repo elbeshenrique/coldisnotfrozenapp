@@ -8,9 +8,11 @@ class AirConditionerLogModel implements AirConditionerLog {
   final bool isOn;
   final bool useRemote;
   final double localTemperature;
-  final double remoteTemperature;
+  final int remoteTemperature;
   final bool relayStatus;
-  
+
+  String createdAt;
+
   AirConditionerLogModel({
     this.offset,
     this.setpoint,
@@ -19,7 +21,9 @@ class AirConditionerLogModel implements AirConditionerLog {
     this.localTemperature,
     this.remoteTemperature,
     this.relayStatus,
+    this.createdAt,
   });
+  
 
   Map<String, dynamic> toMap() {
     return {

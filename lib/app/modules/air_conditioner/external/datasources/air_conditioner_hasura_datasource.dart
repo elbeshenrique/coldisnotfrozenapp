@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
@@ -14,11 +16,13 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   AirConditionerHasuraDataSource(this.dio);
 
   @override
-  Future<AirConditionerConfigurationModel> getConfig(String id) async {
+  Future<List<AirConditionerConfigurationModel>> getConfigurationList() async {
+    const id = "467683a1-2212-4113-bc05-631d32cde51f";
+
     var result = await this.dio.post(
           "https://hasura-melon.herokuapp.com/v1/graphql",
           data: {
-            HASURA_QUERY_KEY: "query{airconditioner_configuration(where:{id:{_eq: \"$id\"}}){offset setpoint isOn useRemote}}",
+            HASURA_QUERY_KEY: "query{airconditioner_configuration{id offset setpoint isOn useRemote}}",
           },
           options: Options(
             contentType: APPLICATION_JSON,
@@ -27,21 +31,28 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
             },
           ),
         );
+
     if (result.statusCode == 200) {
-      var mapFirstAirConditioner = result.data["data"]["airconditioner_configuration"][0];
-      var airConditionerModel = AirConditionerConfigurationModel.fromMap(mapFirstAirConditioner);
-      return airConditionerModel;
+      List<dynamic> airConditionerConfigurationDynamic = result.data["data"]["airconditioner_configuration"];
+      var airConditionerConfigurationModelList = new List<AirConditionerConfigurationModel>();
+
+      for (Map<String, dynamic> airConditionerConfigurationMapItem in airConditionerConfigurationDynamic) {
+        var airConditionerModel = AirConditionerConfigurationModel.fromMap(airConditionerConfigurationMapItem);
+        airConditionerConfigurationModelList.add(airConditionerModel);
+      }
+
+      return airConditionerConfigurationModelList;
     } else {
       throw Exception();
     }
   }
 
   @override
-  Future<AirConditionerLogModel> getLog(String id) async {
+  Future<AirConditionerLogModel> getLastLog(String id) async {
     var result = await this.dio.post(
           "https://hasura-melon.herokuapp.com/v1/graphql",
           data: {
-            HASURA_QUERY_KEY: "query{airconditioner_log(limit: 1, where:{id:{_eq: \"$id\"}}, order_by: {created_at: desc}) { json }}"
+            HASURA_QUERY_KEY: "query{airconditioner_log(limit: 1, where:{ sensor_id:{ _eq: \"$id\"}}, order_by: {created_at: desc}) { created_at, json }}"
           },
           options: Options(
             contentType: APPLICATION_JSON,
@@ -50,10 +61,22 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
             },
           ),
         );
+
     if (result.statusCode == 200) {
-      var mapFirstAirConditioner = result.data["data"]["airconditioner_log"][0];
-      var airConditionerModel = AirConditionerLogModel.fromMap(mapFirstAirConditioner);
-      return airConditionerModel;
+      List<dynamic> airConditionerLogList = result.data["data"]["airconditioner_log"];
+      if (airConditionerLogList?.length > 0) {
+        var airConditionerLogMap = airConditionerLogList[0];
+        var airConditionerLogJson = airConditionerLogMap["json"];
+        var airConditionerLogJsonDecoded = json.decode(airConditionerLogJson);
+
+        String airConditionerLogCreatedAt = airConditionerLogMap["created_at"];
+
+        var airConditionerLogModel = AirConditionerLogModel.fromMap(airConditionerLogJsonDecoded);
+        airConditionerLogModel.createdAt = airConditionerLogCreatedAt;
+        return airConditionerLogModel;
+      }
+
+      return null;
     } else {
       throw Exception();
     }

@@ -4,6 +4,8 @@ abstract class AirConditionerLog {
   bool get isOn;
   bool get useRemote;
   double get localTemperature;
-  double get remoteTemperature;
+  int get remoteTemperature;
   bool get relayStatus;
+  
+  String get createdAt;
 }

@@ -4,6 +4,6 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_model.dart';
 
 abstract class AirConditionerDataSource {
-  Future<AirConditionerConfigurationModel> getConfig(String id);
-  Future<AirConditionerLogModel> getLog(String id);
+  Future<List<AirConditionerConfigurationModel>> getConfigurationList();
+  Future<AirConditionerLogModel> getLastLog(String id);
 }
