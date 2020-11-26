@@ -45,22 +45,16 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
     });
   }
 
-  final _$getDataAsyncAction = AsyncAction('_AirConditionerStoreBase.getData');
-
-  @override
-  Future<void> getData() {
-    return _$getDataAsyncAction.run(() => super.getData());
-  }
-
   final _$_AirConditionerStoreBaseActionController =
       ActionController(name: '_AirConditionerStoreBase');
 
   @override
-  void setAirConditionerConfigurationList(List<AirConditionerItemModel> value) {
+  void _setAirConditionerConfigurationList(
+      List<AirConditionerItemModel> value) {
     final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
-        name: '_AirConditionerStoreBase.setAirConditionerConfigurationList');
+        name: '_AirConditionerStoreBase._setAirConditionerConfigurationList');
     try {
-      return super.setAirConditionerConfigurationList(value);
+      return super._setAirConditionerConfigurationList(value);
     } finally {
       _$_AirConditionerStoreBaseActionController.endAction(_$actionInfo);
     }

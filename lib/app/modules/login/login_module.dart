@@ -40,9 +40,9 @@ class LoginModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router("/", child: (context, args) => LoginPage()),
-        Router("/phone", child: (context, args) => PhoneLoginPage()),
-        Router("/verify/:verificationId", child: (context, args) => VerifyCodePage()),
+  List<ModularRouter> get routers => [
+        ModularRouter("/", child: (context, args) => LoginPage()),
+        ModularRouter("/phone", child: (context, args) => PhoneLoginPage()),
+        ModularRouter("/verify/:verificationId", child: (context, args) => VerifyCodePage()),
       ];
 }

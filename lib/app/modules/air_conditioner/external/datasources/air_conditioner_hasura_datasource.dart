@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
@@ -37,7 +38,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
       var airConditionerConfigurationModelList = new List<AirConditionerConfigurationModel>();
 
       for (Map<String, dynamic> airConditionerConfigurationMapItem in airConditionerConfigurationDynamic) {
-        var airConditionerModel = AirConditionerConfigurationModel.fromMap(airConditionerConfigurationMapItem);
+        var airConditionerModel = JsonMapper.deserialize<AirConditionerConfigurationModel>(airConditionerConfigurationMapItem);
         airConditionerConfigurationModelList.add(airConditionerModel);
       }
 
@@ -67,11 +68,9 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
       if (airConditionerLogList?.length > 0) {
         var airConditionerLogMap = airConditionerLogList[0];
         var airConditionerLogJson = airConditionerLogMap["json"];
-        var airConditionerLogJsonDecoded = json.decode(airConditionerLogJson);
-
         String airConditionerLogCreatedAt = airConditionerLogMap["created_at"];
-
-        var airConditionerLogModel = AirConditionerLogModel.fromMap(airConditionerLogJsonDecoded);
+        
+        var airConditionerLogModel = JsonMapper.deserialize<AirConditionerLogModel>(airConditionerLogJson);
         airConditionerLogModel.createdAt = airConditionerLogCreatedAt;
         return airConditionerLogModel;
       }

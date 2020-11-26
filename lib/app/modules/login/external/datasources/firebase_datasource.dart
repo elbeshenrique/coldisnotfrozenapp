@@ -50,14 +50,14 @@ class FirebaseDataSourceImpl implements LoginDataSource {
     }
 
     final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
-    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+    final AuthCredential authCredential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
 
-    AuthResult authResult;
+    UserCredential userCredential;
     try {
-      authResult = await auth.signInWithCredential(authCredential);
+      userCredential = await auth.signInWithCredential(authCredential);
     } catch (authResultException) {
       final isSignedIn = await googleSignIn.isSignedIn();
       if (isSignedIn) {
@@ -67,7 +67,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
       throw authResultException;
     }
 
-    final FirebaseUser firebaseUser = authResult.user;
+    final User firebaseUser = userCredential.user;
 
     return UserModel(
       name: firebaseUser.displayName,
@@ -104,7 +104,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
   @override
   Future<UserModel> validateCode({String verificationId, String code}) async {
-    var _credential = PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: code);
+    var _credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
     var user = (await auth.signInWithCredential(_credential)).user;
     return UserModel(
       name: user.displayName,
@@ -115,7 +115,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
   @override
   Future<UserModel> currentUser() async {
-    var user = (await auth.currentUser());
+    var user = auth.currentUser;
 
     if (user == null) throw ErrorGetLoggedUser();
 

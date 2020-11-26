@@ -6,7 +6,7 @@ class HomeModule extends ChildModule {
   List<Bind> get binds => [];
 
   @override
-  List<Router> get routers => [
-        Router(Modular.initialRoute, child: (_, args) => HomePage()),
+  List<ModularRouter> get routers => [
+        ModularRouter(Modular.initialRoute, child: (_, args) => HomePage()),
       ];
 }

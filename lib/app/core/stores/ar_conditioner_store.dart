@@ -21,14 +21,8 @@ abstract class _AirConditionerStoreBase with Store {
   }
 
   @action
-  void setAirConditionerConfigurationList(List<AirConditionerItemModel> value) {
+  void _setAirConditionerConfigurationList(List<AirConditionerItemModel> value) {
     airConditionerConfigurationList = value.asObservable();
-  }
-
-  @action
-  Future<void> getData() async {
-    // var clienteResult = await repository.getAllClientes();
-    // data = clienteResult?.asObservable();
   }
 
   Future getConfigurationList() async {
@@ -42,6 +36,6 @@ abstract class _AirConditionerStoreBase with Store {
       airConditionerItemModel.lastLog = airConditionerLog;
     };
     
-    setAirConditionerConfigurationList(airConditionerItemModelList);
+    _setAirConditionerConfigurationList(airConditionerItemModelList);
   }
 }
