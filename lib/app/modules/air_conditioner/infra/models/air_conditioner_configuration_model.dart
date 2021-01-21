@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dart_json_mapper/dart_json_mapper.dart' show jsonSerializable;
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
 

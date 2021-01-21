@@ -12,14 +12,14 @@ part 'firebase_datasource.g.dart';
 
 @Injectable(singleton: false)
 class FirebaseDataSourceImpl implements LoginDataSource {
-  final FirebaseAuth auth;
+  final FirebaseAuth firebaseAuth;
   final GoogleSignIn googleSignIn;
 
-  FirebaseDataSourceImpl(this.auth, this.googleSignIn);
+  FirebaseDataSourceImpl(this.firebaseAuth, this.googleSignIn);
 
   @override
   Future<UserModel> loginEmail({String email, String password}) async {
-    var result = await auth.signInWithEmailAndPassword(email: email, password: password);
+    var result = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     var user = result.user;
     return UserModel(
       name: user.displayName,
@@ -57,7 +57,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
     UserCredential userCredential;
     try {
-      userCredential = await auth.signInWithCredential(authCredential);
+      userCredential = await firebaseAuth.signInWithCredential(authCredential);
     } catch (authResultException) {
       final isSignedIn = await googleSignIn.isSignedIn();
       if (isSignedIn) {
@@ -79,7 +79,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   @override
   Future<UserModel> loginPhone({String phone}) async {
     var completer = Completer<AuthCredential>();
-    await auth.verifyPhoneNumber(
+    await firebaseAuth.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: Duration(seconds: 30),
         verificationCompleted: (auth) {
@@ -94,7 +94,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
         codeAutoRetrievalTimeout: (v) {});
 
     var credential = await completer.future;
-    var user = (await auth.signInWithCredential(credential)).user;
+    var user = (await firebaseAuth.signInWithCredential(credential)).user;
     return UserModel(
       name: user.displayName,
       phoneNumber: user.phoneNumber,
@@ -105,7 +105,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   @override
   Future<UserModel> validateCode({String verificationId, String code}) async {
     var _credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
-    var user = (await auth.signInWithCredential(_credential)).user;
+    var user = (await firebaseAuth.signInWithCredential(_credential)).user;
     return UserModel(
       name: user.displayName,
       phoneNumber: user.phoneNumber,
@@ -115,7 +115,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
   @override
   Future<UserModel> currentUser() async {
-    var user = auth.currentUser;
+    var user = firebaseAuth.currentUser;
 
     if (user == null) throw ErrorGetLoggedUser();
 
@@ -128,7 +128,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
 
   @override
   Future<void> logout() async {
-    await auth.signOut();
+    await firebaseAuth.signOut();
     await googleSignIn.disconnect();
   }
 }

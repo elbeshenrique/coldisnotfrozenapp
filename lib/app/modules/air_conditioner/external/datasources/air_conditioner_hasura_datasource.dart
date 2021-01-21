@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
@@ -7,10 +5,10 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_model.dart';
 
 class AirConditionerHasuraDataSource implements AirConditionerDataSource {
-  final String HASURA_ADMIN_SECRET_KEY = "x-hasura-admin-secret";
-  final String HASURA_ADMIN_SECRET_VALUE = "D9rz5x8Se3RjaTzL";
-  final String HASURA_QUERY_KEY = "query";
-  final String APPLICATION_JSON = "application/json";
+  static const String HASURA_ADMIN_SECRET_KEY = "x-hasura-admin-secret";
+  static const String HASURA_ADMIN_SECRET_VALUE = "D9rz5x8Se3RjaTzL";
+  static const String HASURA_QUERY_KEY = "query";
+  static const String APPLICATION_JSON = "application/json";
 
   final Dio dio;
 
@@ -18,8 +16,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
 
   @override
   Future<List<AirConditionerConfigurationModel>> getConfigurationList() async {
-    const id = "467683a1-2212-4113-bc05-631d32cde51f";
-
+    //const id = "467683a1-2212-4113-bc05-631d32cde51f";
     var result = await this.dio.post(
           "https://hasura-melon.herokuapp.com/v1/graphql",
           data: {
@@ -38,7 +35,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
       var airConditionerConfigurationModelList = new List<AirConditionerConfigurationModel>();
 
       for (Map<String, dynamic> airConditionerConfigurationMapItem in airConditionerConfigurationDynamic) {
-        var airConditionerModel = JsonMapper.deserialize<AirConditionerConfigurationModel>(airConditionerConfigurationMapItem);
+        var airConditionerModel = JsonMapper.fromMap<AirConditionerConfigurationModel>(airConditionerConfigurationMapItem);
         airConditionerConfigurationModelList.add(airConditionerModel);
       }
 
@@ -65,6 +62,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
 
     if (result.statusCode == 200) {
       List<dynamic> airConditionerLogList = result.data["data"]["airconditioner_log"];
+      // ignore: null_aware_before_operator
       if (airConditionerLogList?.length > 0) {
         var airConditionerLogMap = airConditionerLogList[0];
         var airConditionerLogJson = airConditionerLogMap["json"];

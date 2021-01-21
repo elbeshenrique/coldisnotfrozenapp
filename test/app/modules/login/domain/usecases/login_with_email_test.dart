@@ -13,7 +13,7 @@ class LoginRepositoryMock extends Mock implements LoginRepository {}
 
 class ConnectivityServiceMock extends Mock implements ConnectivityService {}
 
-class FirebaseUserMock extends Mock implements FirebaseUser {}
+class FirebaseUserMock extends Mock implements User {}
 
 main() {
   final repository = LoginRepositoryMock();

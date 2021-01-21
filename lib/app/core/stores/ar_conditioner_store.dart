@@ -17,7 +17,11 @@ abstract class _AirConditionerStoreBase with Store {
 
   @computed
   bool get isLoaded {
-    return airConditionerConfigurationList?.length > 0;
+    if (airConditionerConfigurationList == null) {
+      return false;
+    }
+
+    return airConditionerConfigurationList.length > 0;
   }
 
   @action
@@ -34,7 +38,7 @@ abstract class _AirConditionerStoreBase with Store {
     for(var airConditionerItemModel in airConditionerItemModelList) {
       var airConditionerLog = await dataSource.getLastLog(airConditionerItemModel.configuration.id);  
       airConditionerItemModel.lastLog = airConditionerLog;
-    };
+    }
     
     _setAirConditionerConfigurationList(airConditionerItemModelList);
   }

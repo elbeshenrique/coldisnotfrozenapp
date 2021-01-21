@@ -11,9 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  asuka:
-    git:
-      url: https://github.com/Flutterando/asuka.git
+  asuka: ^1.0.4
   connectivity: ^2.0.2
   dartz: ^0.9.1
   dart_json_mapper: ^1.6.2
