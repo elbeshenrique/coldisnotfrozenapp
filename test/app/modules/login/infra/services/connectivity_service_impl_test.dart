@@ -15,7 +15,7 @@ main() {
     test('should return bool', () async {
       when(driver.isOnline).thenAnswer((_) async => true);
       var result = await service.isOnline();
-      expect(result, isA<Right<dynamic, bool>>());
+      expect(result, isA<Right<dynamic, Unit>>());
     });
     test('should call ErrorLoginEmail', () async {
       when(service.isOnline()).thenThrow(ConnectionError());

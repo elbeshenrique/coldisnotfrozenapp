@@ -93,4 +93,17 @@ main() {
       expect(result.leftMap((l) => l is ErrorLogout), Left(true));
     });
   });
+
+  group("loginGoogle", () {
+    test('should get UserModel', () async {
+      when(datasource.loginGoogle()).thenAnswer((_) async => userReturn);
+      var result = await repository.loginEmail();
+      expect(result, isA<Right<dynamic, LoggedUserInfo>>());
+    });
+    test('should call ErrorLoginEmail', () async {
+      when(datasource.loginEmail()).thenThrow(ErrorLoginEmail());
+      var result = await repository.loginEmail();
+      expect(result.leftMap((l) => l is ErrorLoginEmail), Left(true));
+    });
+  });
 }
