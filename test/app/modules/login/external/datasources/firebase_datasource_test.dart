@@ -12,6 +12,10 @@ class LoginDataSourceMock extends Mock implements LoginDataSource {}
 
 class GoogleSignInMock extends Mock implements GoogleSignIn {}
 
+class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
+
+class GoogleSignInAuthenticationMock extends Mock implements GoogleSignInAuthentication {}
+
 class UserMock extends Mock implements User {}
 
 class UserCredentialMock extends Mock implements UserCredential {}
@@ -23,7 +27,6 @@ class PhoneAuthCredentialMock extends Mock implements PhoneAuthCredential {}
 class FirebaseAuthExceptionMock extends Mock implements FirebaseAuthException {}
 
 class FirebaseAuthMock extends Mock implements FirebaseAuth {
-
   @override
   Future<void> verifyPhoneNumber({
     String phoneNumber,
@@ -37,9 +40,9 @@ class FirebaseAuthMock extends Mock implements FirebaseAuth {
   }) async {
     Future.delayed(Duration(milliseconds: 800)).then((value) {
       if (phoneNumber == "0") {
-        verificationCompleted(phoneCredential);
+        verificationCompleted(phoneAuthCredentialMock);
       } else if (phoneNumber == "1") {
-        verificationFailed(authException);
+        verificationFailed(firebaseAuthExceptionMock);
       } else if (phoneNumber == "2") {
         codeSent("dwf32f", 1);
       } else if (phoneNumber == "3") {
@@ -51,88 +54,96 @@ class FirebaseAuthMock extends Mock implements FirebaseAuth {
   }
 }
 
-final phoneCredential = PhoneAuthCredentialMock();
-final credential = AuthCredentialMock();
-final authException = FirebaseAuthExceptionMock();
+final phoneAuthCredentialMock = PhoneAuthCredentialMock();
+final authCredentialMock = AuthCredentialMock();
+final firebaseAuthExceptionMock = FirebaseAuthExceptionMock();
+
 main() {
-  final firebaseAuth = FirebaseAuthMock();
-  final googleSignIn = GoogleSignInMock();
-  final firebaseUser = UserMock();
-  final user = const LoggedUser(
+  final googleSignInMock = GoogleSignInMock();
+  final googleSignInAccountMock = GoogleSignInAccountMock();
+  final googleSignInAuthenticationMock = GoogleSignInAuthenticationMock();
+
+  final firebaseAuthMock = FirebaseAuthMock();
+  final firebaseUserMock = UserMock();
+  final userCredentialMock = UserCredentialMock();
+
+  final String phoneVerificationId = "";
+  final String phoneCode = "";
+
+  final loggedUser = const LoggedUser(
     name: "Jacob",
     phoneNumber: "123456",
     email: "jacob@flutterando.com",
   );
 
-  final authResult = UserCredentialMock();
-  //final datasource = LoginDataSourceMock();
-  final datasource = FirebaseDataSourceImpl(firebaseAuth, googleSignIn);
-
-  final String phoneVerificationId = "";
-  final String phoneCode = "";
+  final datasource = FirebaseDataSourceImpl(firebaseAuthMock, googleSignInMock);
 
   setUpAll(() {
-    when(firebaseUser.displayName).thenReturn("Jacob");
-    when(firebaseUser.email).thenReturn("jacob@flutterando.com");
-    when(firebaseUser.phoneNumber).thenReturn("123456");
-    when(authResult.user).thenReturn(firebaseUser);
+    when(googleSignInAuthenticationMock.accessToken).thenReturn("accessToken");
+    when(googleSignInAuthenticationMock.idToken).thenReturn("idToken");
 
-    when(firebaseAuth.signInWithEmailAndPassword(
-            email: anyNamed('email'), password: anyNamed('password')))
-        .thenAnswer((_) async => authResult);
+    when(googleSignInAccountMock.authentication).thenAnswer((_) async => googleSignInAuthenticationMock);
 
-    when(firebaseAuth.signInWithCredential(any)).thenAnswer((_) async => authResult);
+    when(googleSignInMock.currentUser).thenReturn(googleSignInAccountMock);
+    when(googleSignInMock.isSignedIn()).thenAnswer((_) async => true);
+
+    when(firebaseUserMock.displayName).thenReturn("Jacob");
+    when(firebaseUserMock.email).thenReturn("jacob@flutterando.com");
+    when(firebaseUserMock.phoneNumber).thenReturn("123456");
+
+    when(userCredentialMock.user).thenReturn(firebaseUserMock);
+    
+    when(firebaseAuthMock.signInWithEmailAndPassword(email: anyNamed('email'), password: anyNamed('password'))).thenAnswer((_) async => userCredentialMock);
+    when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((_) async => userCredentialMock);
   });
 
-  test('should return Logged User  loginEmail', () async {
+  test('should return LoggedUser loginGoogle', () async {
+    var result = await datasource.loginGoogle();
+    expect(result.name, equals(loggedUser.name));
+    expect(result.phoneNumber, equals(loggedUser.phoneNumber));
+    expect(result.email, equals(loggedUser.email));
+  });
+  test('should return LoggedUser loginEmail', () async {
     var result = await datasource.loginEmail();
-    expect(result.name, equals(user.name));
-    expect(result.phoneNumber, equals(user.phoneNumber));
-    expect(result.email, equals(user.email));
+    expect(result.name, equals(loggedUser.name));
+    expect(result.phoneNumber, equals(loggedUser.phoneNumber));
+    expect(result.email, equals(loggedUser.email));
   });
-  test('should return Logged User  validateCode', () async {
+  test('should return LoggedUser validateCode', () async {
     var result = await datasource.validateCode(verificationId: phoneVerificationId, code: phoneCode);
-    expect(result.name, equals(user.name));
-    expect(result.phoneNumber, equals(user.phoneNumber));
-    expect(result.email, equals(user.email));
+    expect(result.name, equals(loggedUser.name));
+    expect(result.phoneNumber, equals(loggedUser.phoneNumber));
+    expect(result.email, equals(loggedUser.email));
   });
-
-  test('should return Logged User loginPhone', () async {
+  test('should return LoggedUser loginPhone', () async {
     var result = await datasource.loginPhone(phone: "0");
-    expect(result.name, equals(user.name));
-    expect(result.phoneNumber, equals(user.phoneNumber));
-    expect(result.email, equals(user.email));
+    expect(result.name, equals(loggedUser.name));
+    expect(result.phoneNumber, equals(loggedUser.phoneNumber));
+    expect(result.email, equals(loggedUser.email));
   });
   test('should return FirebaseUser loginPhone Error', () async {
-    expect(() async => await datasource.loginPhone(phone: "1"),
-        throwsA(authException));
+    expect(() async => await datasource.loginPhone(phone: "1"), throwsA(firebaseAuthExceptionMock));
   });
-  test('should return NotAutomaticRetrieved loginPhone Not Automatic Retrieve',
-      () async {
-    expect(() async => await datasource.loginPhone(phone: "3"),
-        throwsA(isA<NotAutomaticRetrieved>()));
+  test('should return NotAutomaticRetrieved loginPhone Not Automatic Retrieve', () async {
+    expect(() async => await datasource.loginPhone(phone: "3"), throwsA(isA<NotAutomaticRetrieved>()));
   });
-  test('should return Logged User', () async {
-    when(firebaseAuth.currentUser).thenAnswer((_) => firebaseUser);
+  test('should return LoggedUser', () async {
+    when(firebaseAuthMock.currentUser).thenAnswer((_) => firebaseUserMock);
     var result = await datasource.currentUser();
-    expect(result.name, equals(user.name));
-    expect(result.phoneNumber, equals(user.phoneNumber));
-    expect(result.email, equals(user.email));
+    expect(result.name, equals(loggedUser.name));
+    expect(result.phoneNumber, equals(loggedUser.phoneNumber));
+    expect(result.email, equals(loggedUser.email));
   });
-
   test('should return ErrorGetLoggedUser if User is not logged', () async {
-    when(firebaseAuth.currentUser).thenAnswer((_) => null);
-
+    when(firebaseAuthMock.currentUser).thenAnswer((_) => null);
     expect(datasource.currentUser(), throwsA(isA<ErrorGetLoggedUser>()));
   });
-
   test('should complete logout', () async {
-    when(firebaseAuth.signOut()).thenAnswer((_) async {});
+    when(firebaseAuthMock.signOut()).thenAnswer((_) async {});
     expect(datasource.logout(), completes);
   });
-
   test('should return error', () async {
-    when(firebaseAuth.signOut()).thenThrow(Exception());
+    when(firebaseAuthMock.signOut()).thenThrow(Exception());
     expect(datasource.logout(), throwsA(isA<Exception>()));
   });
 }

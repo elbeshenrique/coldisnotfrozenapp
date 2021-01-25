@@ -16,14 +16,12 @@ main() {
   final repository = LoginRepositoryMock();
   final usecase = GetLoggedUserImpl(repository);
   test('should verify if exist User Logged', () async {
-    when(repository.loggedUser()).thenAnswer(
-        (_) async => Right(UserModel(name: "", email: "", phoneNumber: "")));
+    when(repository.loggedUser()).thenAnswer((_) async => Right(UserModel(name: "", email: "", phoneNumber: "")));
     var result = (await usecase()).fold((l) => null, (r) => r);
     expect(result, isA<LoggedUserInfo>());
   });
   test('should return null if user not logged', () async {
-    when(repository.loggedUser())
-        .thenAnswer((_) async => Left(ErrorGetLoggedUser()));
+    when(repository.loggedUser()).thenAnswer((_) async => Left(ErrorGetLoggedUser()));
 
     var result = (await usecase()).fold((l) => null, (r) => r);
     expect(result, null);
