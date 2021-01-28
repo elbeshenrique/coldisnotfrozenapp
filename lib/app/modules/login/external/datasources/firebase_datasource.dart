@@ -2,55 +2,24 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
+import 'package:guard_class/app/modules/login/infra/datasources/google_athenticator_data_source.dart';
+import 'package:guard_class/app/modules/login/infra/datasources/login_datasource.dart';
 import 'package:guard_class/app/modules/login/infra/models/user_model.dart';
-
-import '../../infra/datasources/login_datasource.dart';
 
 part 'firebase_datasource.g.dart';
 
 @Injectable(singleton: false)
 class FirebaseDataSourceImpl implements LoginDataSource {
   final FirebaseAuth firebaseAuth;
-  final GoogleSignIn googleSignIn;
+  final GoogleAuthenticatorDataSource googleAuthenticator;
 
-  FirebaseDataSourceImpl(this.firebaseAuth, this.googleSignIn);
-
-  @override
-  Future<UserModel> loginEmail({String email, String password}) async {
-    var userCredential = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-    var firebaseUser = userCredential.user;
-    return UserModel(
-      name: firebaseUser.displayName,
-      phoneNumber: firebaseUser.phoneNumber,
-      email: firebaseUser.email,
-    );
-  }
-
-  Future<GoogleSignInAccount> _getGoogleSignInAccount() async {
-    if (googleSignIn.currentUser != null) {
-      return googleSignIn.currentUser;
-    }
-
-    return await googleSignIn.signIn();
-  }
-
-  Future<GoogleAuthCredential> _getGoogleAuthCredential() async {
-    var googleSignInAccount = await _getGoogleSignInAccount();
-    var googleSignInAuthentication = await googleSignInAccount.authentication;
-    var googleAuthCredential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    return googleAuthCredential;
-  }
+  FirebaseDataSourceImpl(this.firebaseAuth, this.googleAuthenticator);
 
   @override
   Future<UserModel> loginGoogle() async {
     try {
-      var googleAuthCredential = await _getGoogleAuthCredential();
+      var googleAuthCredential = await googleAuthenticator.getGoogleAuthCredential();
       var userCredential = await firebaseAuth.signInWithCredential(googleAuthCredential);
       var firebaseUser = userCredential.user;
       return UserModel(
@@ -61,6 +30,17 @@ class FirebaseDataSourceImpl implements LoginDataSource {
     } on Exception catch (ex) {
       throw ErrorLoginGoogle(message: ex.toString());
     }
+  }
+
+  @override
+  Future<UserModel> loginEmail({String email, String password}) async {
+    var userCredential = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    var firebaseUser = userCredential.user;
+    return UserModel(
+      name: firebaseUser.displayName,
+      phoneNumber: firebaseUser.phoneNumber,
+      email: firebaseUser.email,
+    );
   }
 
   @override
@@ -118,6 +98,6 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   @override
   Future<void> logout() async {
     await firebaseAuth.signOut();
-    await googleSignIn.disconnect();
+    await googleAuthenticator.disconnect();
   }
 }

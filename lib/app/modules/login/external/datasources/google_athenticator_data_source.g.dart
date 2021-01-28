@@ -1,14 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'firebase_datasource.dart';
+part of 'google_athenticator_data_source.dart';
 
 // **************************************************************************
 // InjectionGenerator
 // **************************************************************************
 
-final $FirebaseDataSourceImpl = BindInject(
-  (i) => FirebaseDataSourceImpl(
-      i<FirebaseAuth>(), i<GoogleAuthenticatorDataSource>()),
+final $GoogleAuthenticatorDataSourceImpl = BindInject(
+  (i) => GoogleAuthenticatorDataSourceImpl(i<GoogleSignIn>()),
   singleton: false,
   lazy: true,
 );
