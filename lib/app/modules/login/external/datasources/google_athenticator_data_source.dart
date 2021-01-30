@@ -21,7 +21,7 @@ class GoogleAuthenticatorDataSourceImpl implements GoogleAuthenticatorDataSource
     return await googleSignIn.signIn();
   }
 
-  Future<GoogleAuthCredential> getGoogleAuthCredential() async {
+  Future<GoogleAuthCredential> getAuthCredential() async {
     var googleSignInAccount = await _getGoogleSignInAccount();
     var googleSignInAuthentication = await googleSignInAccount.authentication;
     var googleAuthCredential = GoogleAuthProvider.credential(

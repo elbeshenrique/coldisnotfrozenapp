@@ -11,13 +11,7 @@ import 'package:mockito/mockito.dart';
 
 class LoginDataSourceMock extends Mock implements LoginDataSource {}
 
-class GoogleAuthenticatorMock extends Mock implements GoogleAuthenticatorDataSource {}
-
-class GoogleSignInMock extends Mock implements GoogleSignIn {}
-
-class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
-
-class GoogleSignInAuthenticationMock extends Mock implements GoogleSignInAuthentication {}
+class GoogleAuthenticatorDataSourceMock extends Mock implements GoogleAuthenticatorDataSource {}
 
 class UserMock extends Mock implements User {}
 
@@ -62,10 +56,7 @@ final authCredentialMock = AuthCredentialMock();
 final firebaseAuthExceptionMock = FirebaseAuthExceptionMock();
 
 main() {
-  // final googleSignInMock = GoogleSignInMock();
-  // final googleSignInAccountMock = GoogleSignInAccountMock();
-  // final googleSignInAuthenticationMock = GoogleSignInAuthenticationMock();
-  final googleAuthenticatorMock = GoogleAuthenticatorMock();
+  final googleAuthenticatorMock = GoogleAuthenticatorDataSourceMock();
 
   final firebaseAuthMock = FirebaseAuthMock();
   final firebaseUserMock = UserMock();
@@ -83,14 +74,6 @@ main() {
   final datasource = FirebaseDataSourceImpl(firebaseAuthMock, googleAuthenticatorMock);
 
   setUpAll(() {
-    // when(googleSignInAuthenticationMock.accessToken).thenReturn("accessToken");
-    // when(googleSignInAuthenticationMock.idToken).thenReturn("idToken");
-
-    // when(googleSignInAccountMock.authentication).thenAnswer((_) async => googleSignInAuthenticationMock);
-
-    // when(googleSignInMock.currentUser).thenReturn(googleSignInAccountMock);
-    // when(googleSignInMock.isSignedIn()).thenAnswer((_) async => true);
-
     when(firebaseUserMock.displayName).thenReturn("Jacob");
     when(firebaseUserMock.email).thenReturn("jacob@flutterando.com");
     when(firebaseUserMock.phoneNumber).thenReturn("123456");

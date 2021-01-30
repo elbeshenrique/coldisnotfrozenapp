@@ -19,7 +19,7 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   @override
   Future<UserModel> loginGoogle() async {
     try {
-      var googleAuthCredential = await googleAuthenticator.getGoogleAuthCredential();
+      var googleAuthCredential = await googleAuthenticator.getAuthCredential();
       var userCredential = await firebaseAuth.signInWithCredential(googleAuthCredential);
       var firebaseUser = userCredential.user;
       return UserModel(
@@ -47,18 +47,19 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   Future<UserModel> loginPhone({String phone}) async {
     var completer = Completer<AuthCredential>();
     await firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phone,
-        timeout: Duration(seconds: 30),
-        verificationCompleted: (auth) {
-          completer.complete(auth);
-        },
-        verificationFailed: (e) {
-          completer.completeError(e);
-        },
-        codeSent: (String c, [int i]) {
-          completer.completeError(NotAutomaticRetrieved(c));
-        },
-        codeAutoRetrievalTimeout: (v) {});
+      phoneNumber: phone,
+      timeout: Duration(seconds: 30),
+      verificationCompleted: (auth) {
+        completer.complete(auth);
+      },
+      verificationFailed: (e) {
+        completer.completeError(e);
+      },
+      codeSent: (String c, [int i]) {
+        completer.completeError(NotAutomaticRetrieved(c));
+      },
+      codeAutoRetrievalTimeout: (v) {},
+    );
 
     var authCredential = await completer.future;
     var userCredential = await firebaseAuth.signInWithCredential(authCredential);

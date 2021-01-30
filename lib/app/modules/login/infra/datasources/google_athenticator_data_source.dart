@@ -4,6 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 abstract class GoogleAuthenticatorDataSource {
   GoogleSignIn get googleSignIn;
   
-  Future<GoogleAuthCredential> getGoogleAuthCredential();
+  Future<GoogleAuthCredential> getAuthCredential();
   Future<void> disconnect();
 }
