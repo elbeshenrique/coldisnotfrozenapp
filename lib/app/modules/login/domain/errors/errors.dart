@@ -14,7 +14,7 @@ class ErrorLoginEmail extends Failure {
 
 class ErrorLoginGoogle extends Failure {
   final String message;
-  ErrorLoginGoogle({this.message});
+  ErrorLoginGoogle(this.message);
 }
 
 class ErrorGetLoggedUser extends Failure {

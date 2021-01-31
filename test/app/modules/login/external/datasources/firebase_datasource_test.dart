@@ -5,13 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guard_class/app/modules/login/domain/entities/logged_user.dart';
 import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/login/external/datasources/firebase_datasource.dart';
-import 'package:guard_class/app/modules/login/infra/datasources/google_athenticator_data_source.dart';
+import 'package:guard_class/app/modules/login/infra/drivers/google_athenticator_driver.dart';
 import 'package:guard_class/app/modules/login/infra/datasources/login_datasource.dart';
 import 'package:mockito/mockito.dart';
 
 class LoginDataSourceMock extends Mock implements LoginDataSource {}
 
-class GoogleAuthenticatorDataSourceMock extends Mock implements GoogleAuthenticatorDataSource {}
+class GoogleAuthenticatorDriverMock extends Mock implements GoogleAuthenticatorDriver {}
 
 class UserMock extends Mock implements User {}
 
@@ -56,7 +56,7 @@ final authCredentialMock = AuthCredentialMock();
 final firebaseAuthExceptionMock = FirebaseAuthExceptionMock();
 
 main() {
-  final googleAuthenticatorMock = GoogleAuthenticatorDataSourceMock();
+  final googleAuthenticatorMock = GoogleAuthenticatorDriverMock();
 
   final firebaseAuthMock = FirebaseAuthMock();
   final firebaseUserMock = UserMock();
@@ -79,30 +79,39 @@ main() {
     when(firebaseUserMock.phoneNumber).thenReturn("123456");
 
     when(userCredentialMock.user).thenReturn(firebaseUserMock);
-    
-    when(firebaseAuthMock.signInWithEmailAndPassword(email: anyNamed('email'), password: anyNamed('password'))).thenAnswer((_) async => userCredentialMock);
-    when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((_) async => userCredentialMock);
   });
 
   test('should return LoggedUser loginGoogle', () async {
+    when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((_) async => userCredentialMock);
     var result = await datasource.loginGoogle();
     expect(result.name, equals(loggedUser.name));
     expect(result.phoneNumber, equals(loggedUser.phoneNumber));
     expect(result.email, equals(loggedUser.email));
   });
+  test('should return FirebaseAuthException loginGoogle Error', () async {
+    when(firebaseAuthMock.signInWithCredential(any)).thenThrow(firebaseAuthExceptionMock);
+    expect(() async => await datasource.loginGoogle(), throwsA(firebaseAuthExceptionMock));
+  });
   test('should return LoggedUser loginEmail', () async {
+    when(firebaseAuthMock.signInWithEmailAndPassword(email: anyNamed('email'), password: anyNamed('password'))).thenAnswer((_) async => userCredentialMock);
     var result = await datasource.loginEmail();
     expect(result.name, equals(loggedUser.name));
     expect(result.phoneNumber, equals(loggedUser.phoneNumber));
     expect(result.email, equals(loggedUser.email));
   });
+  test('should return FirebaseAuthException loginEmail Error', () async {
+    when(firebaseAuthMock.signInWithEmailAndPassword(email: anyNamed('email'), password: anyNamed('password'))).thenThrow(firebaseAuthExceptionMock);
+    expect(() async => await datasource.loginEmail(), throwsA(firebaseAuthExceptionMock));
+  });
   test('should return LoggedUser validateCode', () async {
+    when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((_) async => userCredentialMock);
     var result = await datasource.validateCode(verificationId: phoneVerificationId, code: phoneCode);
     expect(result.name, equals(loggedUser.name));
     expect(result.phoneNumber, equals(loggedUser.phoneNumber));
     expect(result.email, equals(loggedUser.email));
   });
   test('should return LoggedUser loginPhone', () async {
+    when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((_) async => userCredentialMock);
     var result = await datasource.loginPhone(phone: "0");
     expect(result.name, equals(loggedUser.name));
     expect(result.phoneNumber, equals(loggedUser.phoneNumber));

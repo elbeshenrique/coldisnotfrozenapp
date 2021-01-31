@@ -8,7 +8,7 @@ part of 'firebase_datasource.dart';
 
 final $FirebaseDataSourceImpl = BindInject(
   (i) => FirebaseDataSourceImpl(
-      i<FirebaseAuth>(), i<GoogleAuthenticatorDataSource>()),
+      i<FirebaseAuth>(), i<GoogleAuthenticatorDriver>()),
   singleton: false,
   lazy: true,
 );

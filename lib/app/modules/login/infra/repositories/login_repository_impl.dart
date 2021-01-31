@@ -19,7 +19,7 @@ class LoginRepositoryImpl implements LoginRepository {
       var user = await dataSource.loginGoogle();
       return Right(user);
     } catch (e) {
-      return Left(ErrorLoginGoogle(message: "Error login with Google: ${e.toString()}"));
+      return Left(ErrorLoginGoogle("Error login with Google: ${e.toString()}"));
     }
   }
 

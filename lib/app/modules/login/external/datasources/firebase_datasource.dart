@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
-import 'package:guard_class/app/modules/login/infra/datasources/google_athenticator_data_source.dart';
+import 'package:guard_class/app/modules/login/infra/drivers/google_athenticator_driver.dart';
 import 'package:guard_class/app/modules/login/infra/datasources/login_datasource.dart';
 import 'package:guard_class/app/modules/login/infra/models/user_model.dart';
 
@@ -12,24 +12,20 @@ part 'firebase_datasource.g.dart';
 @Injectable(singleton: false)
 class FirebaseDataSourceImpl implements LoginDataSource {
   final FirebaseAuth firebaseAuth;
-  final GoogleAuthenticatorDataSource googleAuthenticator;
+  final GoogleAuthenticatorDriver googleAuthenticator;
 
   FirebaseDataSourceImpl(this.firebaseAuth, this.googleAuthenticator);
 
   @override
   Future<UserModel> loginGoogle() async {
-    try {
-      var googleAuthCredential = await googleAuthenticator.getAuthCredential();
-      var userCredential = await firebaseAuth.signInWithCredential(googleAuthCredential);
-      var firebaseUser = userCredential.user;
-      return UserModel(
-        name: firebaseUser.displayName,
-        phoneNumber: firebaseUser.phoneNumber,
-        email: firebaseUser.email,
-      );
-    } on Exception catch (ex) {
-      throw ErrorLoginGoogle(message: ex.toString());
-    }
+    var googleAuthCredential = await googleAuthenticator.getAuthCredential();
+    var userCredential = await firebaseAuth.signInWithCredential(googleAuthCredential);
+    var firebaseUser = userCredential.user;
+    return UserModel(
+      name: firebaseUser.displayName,
+      phoneNumber: firebaseUser.phoneNumber,
+      email: firebaseUser.email,
+    );
   }
 
   @override

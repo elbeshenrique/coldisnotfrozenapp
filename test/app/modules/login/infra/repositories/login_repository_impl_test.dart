@@ -101,7 +101,7 @@ main() {
       expect(result, isA<Right<dynamic, LoggedUserInfo>>());
     });
     test('should Throw ErrorLoginGoogle', () async {
-      when(datasource.loginGoogle()).thenThrow(ErrorLoginGoogle());
+      when(datasource.loginGoogle()).thenThrow(Exception());
       var result = await repository.loginGoogle();
       expect(result.leftMap((l) => l is ErrorLoginGoogle), Left(true));
     });
