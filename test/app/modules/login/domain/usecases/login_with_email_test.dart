@@ -20,26 +20,21 @@ main() {
   final service = ConnectivityServiceMock();
   final usecase = LoginWithEmailImpl(repository, service);
 
-  setUpAll(() {
+  setUp(() {
     when(service.isOnline()).thenAnswer((_) async => Right(unit));
   });
   test('should verify if email is not valid', () async {
-    var result = await usecase(
-        LoginCredential.withEmailAndPassword(email: "", password: ""));
+    var result = await usecase(LoginCredential.withEmailAndPassword(email: "", password: ""));
     expect(result.leftMap((l) => l is ErrorLoginEmail), Left(true));
   });
   test('should verify if password is not valid', () async {
-    var result = await usecase(LoginCredential.withEmailAndPassword(
-        email: "flutterando@fluutterando.com", password: ""));
+    var result = await usecase(LoginCredential.withEmailAndPassword(email: "flutterando@fluutterando.com", password: ""));
     expect(result.leftMap((l) => l is ErrorLoginEmail), Left(true));
   });
   test('should consume repository loginEmail', () async {
     var user = UserModel(name: "null");
-    when(repository.loginEmail(
-            email: anyNamed('email'), password: anyNamed('password')))
-        .thenAnswer((_) async => Right(user));
-    var result = await usecase(LoginCredential.withEmailAndPassword(
-        email: "jacob@flutterando.com", password: "123456"));
+    when(repository.loginEmail(email: anyNamed('email'), password: anyNamed('password'))).thenAnswer((_) async => Right(user));
+    var result = await usecase(LoginCredential.withEmailAndPassword(email: "jacob@flutterando.com", password: "123456"));
 
     expect(result, Right(user));
   });
@@ -47,8 +42,7 @@ main() {
   test('should return error when offline', () async {
     when(service.isOnline()).thenAnswer((_) async => Left(ConnectionError()));
 
-    var result = await usecase(LoginCredential.withEmailAndPassword(
-        email: "jacob@flutterando.com", password: "123456"));
+    var result = await usecase(LoginCredential.withEmailAndPassword(email: "jacob@flutterando.com", password: "123456"));
     expect(result.leftMap((l) => l is ConnectionError), Left(true));
   });
 }

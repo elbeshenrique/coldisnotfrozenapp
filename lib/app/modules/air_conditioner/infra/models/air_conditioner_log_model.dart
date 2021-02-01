@@ -2,7 +2,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_log.dart';
 
 @jsonSerializable
-class AirConditionerLogModel implements AirConditionerLog {
+class AirConditionerLogModel extends AirConditionerLog {
   final double offset;
   final num setpoint;
   final bool isOn;
@@ -10,7 +10,7 @@ class AirConditionerLogModel implements AirConditionerLog {
   final double localTemperature;
   final num remoteTemperature;
   final bool relayStatus;
-
+  
   String createdAt;
 
   AirConditionerLogModel({

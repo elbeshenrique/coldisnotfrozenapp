@@ -8,28 +8,25 @@ class ConnectivityMock extends Mock implements Connectivity {}
 main() {
   final connectivity = ConnectivityMock();
   final driver = FlutterConnectivityDriver(connectivity);
-  test('should return bool mobile', () async {
-    when(connectivity.checkConnectivity())
-        .thenAnswer((_) async => ConnectivityResult.mobile);
+  test('should return true mobile isOnline', () async {
+    when(connectivity.checkConnectivity()).thenAnswer((_) async => ConnectivityResult.mobile);
 
     expect(driver.isOnline, completion(true));
   });
 
-  test('should return bool wifi', () async {
-    when(connectivity.checkConnectivity())
-        .thenAnswer((_) async => ConnectivityResult.wifi);
+  test('should return true wifi isOnline', () async {
+    when(connectivity.checkConnectivity()).thenAnswer((_) async => ConnectivityResult.wifi);
 
     expect(driver.isOnline, completion(true));
   });
 
-  test('should return bool false', () async {
-    when(connectivity.checkConnectivity())
-        .thenAnswer((_) async => ConnectivityResult.none);
+  test('should return false isOnline', () async {
+    when(connectivity.checkConnectivity()).thenAnswer((_) async => ConnectivityResult.none);
 
     expect(driver.isOnline, completion(false));
   });
 
-  test('should return bool false', () async {
+  test('should return Exception isOnline', () async {
     when(connectivity.checkConnectivity()).thenThrow(Exception());
 
     expect(driver.isOnline, throwsA(isA<Exception>()));

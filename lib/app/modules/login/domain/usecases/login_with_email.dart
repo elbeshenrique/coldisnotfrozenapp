@@ -21,8 +21,7 @@ class LoginWithEmailImpl implements LoginWithEmail {
   LoginWithEmailImpl(this.repository, this.service);
 
   @override
-  Future<Either<Failure, LoggedUserInfo>> call(
-      LoginCredential credential) async {
+  Future<Either<Failure, LoggedUserInfo>> call(LoginCredential credential) async {
     var result = await service.isOnline();
 
     if (result.isLeft()) {

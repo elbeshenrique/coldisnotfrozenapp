@@ -14,19 +14,19 @@ abstract class LoginWithGoogle {
 
 @Injectable(singleton: false)
 class LoginWithGoogleImpl implements LoginWithGoogle {
-  final LoginRepository repository;
-  final ConnectivityService service;
+  final LoginRepository loginRepository;
+  final ConnectivityService connectivityService;
 
-  LoginWithGoogleImpl(this.repository, this.service);
+  LoginWithGoogleImpl(this.loginRepository, this.connectivityService);
 
   @override
   Future<Either<Failure, LoggedUserInfo>> call() async {
-    var result = await service.isOnline();
+    var result = await connectivityService.isOnline();
 
     if (result.isLeft()) {
       return result.map((r) => null);
     }
 
-    return await repository.loginGoogle();
+    return await loginRepository.loginGoogle();
   }
 }
