@@ -14,7 +14,10 @@ class GetAirConditionerConfigurationListImpl implements GetAirConditionerConfigu
 
   @override
   Future<Either<AirConditionerFailure, List<AirConditionerConfiguration>>> call() async {
-    return repository.getConfigurationList();    
+    try {
+      return repository.getConfigurationList();
+    } catch (e) {
+      return Left(RepositoryError());
+    }
   }
-  
 }

@@ -1,11 +1,13 @@
-abstract class Failure implements Exception {
+abstract class AirConditionerFailure implements Exception {
   String get message;
 }
 
-abstract class AirConditionerFailure implements Failure {
-}
-
-class DatasourceError extends Failure {
+class DatasourceError extends AirConditionerFailure {
   final String message;
   DatasourceError({this.message});
+}
+
+class RepositoryError extends AirConditionerFailure {
+  final String message;
+  RepositoryError({this.message});
 }

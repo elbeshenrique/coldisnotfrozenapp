@@ -3,17 +3,17 @@ import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_cond
 
 @jsonSerializable
 class AirConditionerConfigurationModel extends AirConditionerConfiguration {
-  final String id;
-  final double offset;
-  final num setpoint;
-  final bool isOn;
-  final bool useRemote;
-
-  const AirConditionerConfigurationModel({
-    this.id,
-    this.offset,
-    this.setpoint,
-    this.isOn,
-    this.useRemote,
-  });
+  AirConditionerConfigurationModel({
+    id,
+    offset,
+    setpoint,
+    isOn,
+    useRemote,
+  }) : super(
+          id: id,
+          offset: offset,
+          setpoint: setpoint,
+          isOn: isOn,
+          useRemote: useRemote,
+        );
 }

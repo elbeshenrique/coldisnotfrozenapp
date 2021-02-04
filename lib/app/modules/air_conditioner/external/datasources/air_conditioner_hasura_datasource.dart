@@ -1,10 +1,10 @@
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_model.dart';
-import 'package:guard_class/app/utils/json_serialization_utils.dart';
+import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   static const String HASURA_URL = "https://hasura-melon.herokuapp.com/v1/graphql";
@@ -14,6 +14,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   static const String APPLICATION_JSON = "application/json";
 
   final Dio dio;
+  final BaseJsonSerializer jsonSerializer = Modular.get<BaseJsonSerializer>();
 
   AirConditionerHasuraDataSource(this.dio);
 
@@ -33,15 +34,15 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
     );
 
     if (response.statusCode == 200) {
-      List<Map<String, dynamic>> airConditionerConfigurationJsonMapList = response.data["data"]["airconditioner_configuration"];
+      List<dynamic> airConditionerConfigurationJsonMapList = response.data["data"]["airconditioner_configuration"];
       return _parseConfigurationList(airConditionerConfigurationJsonMapList);
     } else {
       throw DatasourceError(message: "Falha ao buscar a lista de dados de configuração de dispositivos.");
     }
   }
 
-  List<AirConditionerConfigurationModel> _parseConfigurationList(List<Map<String, dynamic>> jsonMap) {
-    var list = JsonUtils.deserializeListOfMaps<AirConditionerConfigurationModel>(jsonMap);
+  List<AirConditionerConfigurationModel> _parseConfigurationList(List<dynamic> jsonMap) {
+    var list = jsonSerializer.adaptList<AirConditionerConfigurationModel>(jsonMap);
     return list;
   }
 
@@ -77,7 +78,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
     String airConditionerLogJson = airConditionerLogMap["json"];
     String airConditionerLogCreatedAt = airConditionerLogMap["created_at"];
 
-    var airConditionerLogModel = JsonMapper.deserialize<AirConditionerLogModel>(airConditionerLogJson);
+    var airConditionerLogModel = jsonSerializer.deserialize<AirConditionerLogModel>(airConditionerLogJson);
     airConditionerLogModel.createdAt = airConditionerLogCreatedAt;
     return airConditionerLogModel;
   }
