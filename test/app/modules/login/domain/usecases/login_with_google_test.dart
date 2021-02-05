@@ -38,4 +38,9 @@ main() {
     var result = (await loginWithGoogle()).fold(id, id);
     expect(result, isA<ConnectionError>());
   });
+  test('should return LoggedUserInfo null if login is canceled - loginGoogle', () async {
+    when(loginRepositoryMock.loginGoogle()).thenAnswer((_) async => Right(null));
+    var result = await loginWithGoogle();
+    expect(result | null, equals(null));
+  });
 }

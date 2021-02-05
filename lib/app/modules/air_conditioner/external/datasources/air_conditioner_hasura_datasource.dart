@@ -62,14 +62,14 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
     );
 
     if (response.statusCode == 200) {
-      List<Map<String, dynamic>> airConditionerLogList = response.data["data"]["airconditioner_log"];
+      List<dynamic> airConditionerLogList = response.data["data"]["airconditioner_log"];
       return _parseLastLog(airConditionerLogList);
     } else {
       throw DatasourceError(message: "Falha ao buscar o último histórico de leitura.");
     }
   }
 
-  AirConditionerLogModel _parseLastLog(List<Map<String, dynamic>> airConditionerLogList) {
+  AirConditionerLogModel _parseLastLog(List<dynamic> airConditionerLogList) {
     if (airConditionerLogList == null || airConditionerLogList.length == 0) {
       return null;
     }

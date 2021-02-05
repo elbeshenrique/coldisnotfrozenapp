@@ -19,6 +19,10 @@ class FirebaseDataSourceImpl implements LoginDataSource {
   @override
   Future<UserModel> loginGoogle() async {
     var googleAuthCredential = await googleAuthenticator.getAuthCredential();
+    if (googleAuthCredential == null) {
+      return null;
+    }
+
     var userCredential = await firebaseAuth.signInWithCredential(googleAuthCredential);
     var firebaseUser = userCredential.user;
     return UserModel(

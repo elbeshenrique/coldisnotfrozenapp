@@ -23,7 +23,7 @@ class AppModule extends MainModule {
         $AuthStore,
         $AirConditionerStore,
         Bind((i) => Dio()),
-        Bind((i) => JsonSerializer()),
+        Bind((i) => DartJsonMapperSerializer()),
         Bind((i) => GoogleSignIn()),
         Bind((i) => FirebaseAuth.instance),
         Bind((i) => Connectivity()),

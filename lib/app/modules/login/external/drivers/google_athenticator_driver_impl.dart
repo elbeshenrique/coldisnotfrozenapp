@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/login/infra/drivers/google_athenticator_driver.dart';
 
 part 'google_athenticator_driver_impl.g.dart';
@@ -23,6 +24,10 @@ class GoogleAuthenticatorDriverImpl implements GoogleAuthenticatorDriver {
 
   Future<OAuthCredential> getAuthCredential() async {
     GoogleSignInAccount googleSignInAccount = await _getGoogleSignInAccount();
+    if (googleSignInAccount == null) {
+      return null;
+    }
+
     GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
     OAuthCredential googleAuthCredential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,

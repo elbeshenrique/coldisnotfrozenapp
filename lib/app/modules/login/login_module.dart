@@ -1,4 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guard_class/app/modules/login/external/drivers/google_athenticator_driver_impl.dart';
 import 'domain/usecases/get_logged_user.dart';
 import 'domain/usecases/login_with_email.dart';
 import 'domain/usecases/login_with_google.dart';
@@ -19,6 +21,8 @@ import 'presenter/utils/loading_dialog.dart';
 
 class LoginModule extends ChildModule {
   static List<Bind> export = [
+    Bind((i) => GoogleSignIn()),
+    Bind((i) => GoogleAuthenticatorDriverImpl(i())),
     $GetLoggedUserImpl,
     $LogoutImpl,
     $LoginRepositoryImpl,

@@ -95,15 +95,20 @@ main() {
   });
 
   group("loginGoogle", () {
-    test('should get UserModel', () async {
+    test('should get UserModel - loginGoogle', () async {
       when(datasource.loginGoogle()).thenAnswer((_) async => userReturn);
       var result = await repository.loginGoogle();
       expect(result, isA<Right<dynamic, LoggedUserInfo>>());
     });
-    test('should Throw ErrorLoginGoogle', () async {
+    test('should Throw ErrorLoginGoogle - loginGoogle', () async {
       when(datasource.loginGoogle()).thenThrow(Exception());
       var result = await repository.loginGoogle();
       expect(result.leftMap((l) => l is ErrorLoginGoogle), Left(true));
+    });
+    test('should return UserModel null if login is canceled - loginGoogle', () async {
+      when(datasource.loginGoogle()).thenAnswer((_) => null);
+      var result = await repository.loginGoogle();
+      expect(result | null, equals(null));
     });
   });
 }

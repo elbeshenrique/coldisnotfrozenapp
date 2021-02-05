@@ -1,8 +1,10 @@
-import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
 import 'package:mobx/mobx.dart';
+import 'package:asuka/asuka.dart' as asuka;
 
 part 'ar_conditioner_store.g.dart';
 
@@ -30,16 +32,21 @@ abstract class _AirConditionerStoreBase with Store {
   }
 
   Future getConfigurationList() async {
-    var dio = Modular.get<Dio>();
-    var dataSource = AirConditionerHasuraDataSource(dio);
-    var airConditionerConfigurationModelList = await dataSource.getConfigurationList();
-    var airConditionerItemModelList = airConditionerConfigurationModelList.map((item) => AirConditionerItemModel(configuration: item)).toList();
-    
-    for(var airConditionerItemModel in airConditionerItemModelList) {
-      var airConditionerLog = await dataSource.getLastLog(airConditionerItemModel.configuration.id);  
-      airConditionerItemModel.lastLog = airConditionerLog;
-    }
-    
-    _setAirConditionerConfigurationList(airConditionerItemModelList);
+    final usecase = Modular.get<GetAirConditionerConfigurationListImpl>();
+    final result = await usecase();
+    result.fold(
+      (failure) {
+        asuka.showSnackBar(SnackBar(content: Text(failure.message)));
+      },
+      (airConditionerConfigurationList) {
+        final airConditionerItemModelList = airConditionerConfigurationList.map((item) => AirConditionerItemModel(configuration: item)).toList();
+        for (final airConditionerItemModel in airConditionerItemModelList) {
+          // final airConditionerLog = await dataSource.getLastLog(airConditionerItemModel.configuration.id);
+          // itemModel.lastLog = airConditionerLog;
+        }
+
+        _setAirConditionerConfigurationList(airConditionerItemModelList);
+      },
+    );
   }
 }

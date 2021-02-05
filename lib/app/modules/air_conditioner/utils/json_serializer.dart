@@ -5,7 +5,7 @@ abstract class BaseJsonSerializer {
   List<T> adaptList<T>(List<dynamic> list);
 }
 
-class JsonSerializer implements BaseJsonSerializer {
+class DartJsonMapperSerializer implements BaseJsonSerializer {
 
   @override
   T deserialize<T>(String json) {
