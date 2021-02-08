@@ -1,10 +1,17 @@
+import 'package:asuka/asuka.dart' as asuka;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
-import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
 import 'package:mobx/mobx.dart';
-import 'package:asuka/asuka.dart' as asuka;
+
+import "package:guard_class/app/core/extensions/dartz_extensions.dart";
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_log.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_last_log.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_json_model.dart';
+import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 part 'ar_conditioner_store.g.dart';
 
@@ -32,21 +39,39 @@ abstract class _AirConditionerStoreBase with Store {
   }
 
   Future getConfigurationList() async {
-    final usecase = Modular.get<GetAirConditionerConfigurationListImpl>();
-    final result = await usecase();
-    result.fold(
-      (failure) {
-        asuka.showSnackBar(SnackBar(content: Text(failure.message)));
-      },
-      (airConditionerConfigurationList) {
-        final airConditionerItemModelList = airConditionerConfigurationList.map((item) => AirConditionerItemModel(configuration: item)).toList();
-        for (final airConditionerItemModel in airConditionerItemModelList) {
-          // final airConditionerLog = await dataSource.getLastLog(airConditionerItemModel.configuration.id);
-          // itemModel.lastLog = airConditionerLog;
-        }
+    try {
+      final configurationListUsecase = Modular.get<GetAirConditionerConfigurationList>();
+      final lastLogUsecase = Modular.get<GetAirConditionerLastLog>();
+      final airConditionerItemModelList = List<AirConditionerItemModel>();
+      final jsonSerializer = Modular.get<BaseJsonSerializer>();
 
-        _setAirConditionerConfigurationList(airConditionerItemModelList);
-      },
-    );
+      final configurationListResult = await configurationListUsecase();
+
+      await configurationListResult.fold(
+        handleException,
+        (configurationList) async {
+          for (final configuration in configurationList) {
+            final logResult = await lastLogUsecase(configuration.id);
+            final log = logResult.foldAlwaysRight(handleException);
+
+            var logJson = jsonSerializer.deserialize<AirConditionerLogJsonModel>(log?.json);
+
+            airConditionerItemModelList.add(AirConditionerItemModel(
+              configuration: configuration,
+              lastLog: log,
+              lastLogJson: logJson,
+            ));
+          }
+
+          _setAirConditionerConfigurationList(airConditionerItemModelList);
+        },
+      );
+    } catch (e) {
+      handleException(e);
+    }
+  }
+
+  handleException(dynamic exception) {
+    asuka.showSnackBar(SnackBar(content: Text(exception.toString() ?? "")));
   }
 }

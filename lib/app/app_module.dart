@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:guard_class/app/app_widget.dart';
 import 'package:guard_class/app/core/stores/ar_conditioner_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_last_log.dart';
 import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/repositories/air_conditioner_repository_impl.dart';
 import 'package:guard_class/app/modules/login/login_module.dart';
@@ -30,6 +31,7 @@ class AppModule extends MainModule {
         Bind((i) => AirConditionerHasuraDataSource(i())),
         Bind((i) => AirConditionerRepositoryImpl(i())),
         Bind((i) => GetAirConditionerConfigurationListImpl(i())),
+        Bind((i) => GetAirConditionerLastLogImpl(i())),
       ];
 
   @override

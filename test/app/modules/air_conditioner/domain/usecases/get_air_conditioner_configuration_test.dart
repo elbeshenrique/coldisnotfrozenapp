@@ -18,7 +18,7 @@ main() {
     expect(result | null, isA<List<AirConditionerConfiguration>>());
   });
 
-  test("should return a DatasourceError if the repository fails", () async {
+  test("should return a RepositoryError if the repository fails", () async {
     when(repository.getConfigurationList()).thenThrow(Exception());
     final result = await usecase();
     expect(result.fold(id, id), isA<RepositoryError>());

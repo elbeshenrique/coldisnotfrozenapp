@@ -69,25 +69,26 @@ class _AirConditionerListWidgetState extends State<AirConditionerListWidget> {
     var airConditionerItemModel = _airConditionerStore.airConditionerConfigurationList[index];
     var airConditionerConfigurationModel = airConditionerItemModel.configuration;
     var airConditionerLastLog = airConditionerItemModel.lastLog;
+    var airConditionerLastLogJson = airConditionerItemModel.lastLogJson;
 
-    String isOnText;
-    String offsetText;
-    String setpointText;
-    String useRemoteText;
-    String temperatureText;
+    String isOnText = "";
+    String offsetText = "";
+    String setpointText = "";
+    String useRemoteText = "";
+    String temperatureText = "";
 
     bool isOn = false;
     double temperature = 0;
 
-    if (airConditionerLastLog != null) {
-      // isOnText = airConditionerLastLog?.isOn == true ? "Ligado" : "Desligado";
-      // offsetText = "${_numberFormatter.format(airConditionerLastLog?.offset)}ºC de variação";
-      // setpointText = "${_numberFormatter.format(airConditionerLastLog?.setpoint)}ºC de temperatura alvo";
-      // useRemoteText = airConditionerLastLog?.useRemote == true ? "Usa remoto" : "Não usa remoto";
-      // temperatureText = airConditionerLastLog != null ? "${_numberFormatter.format(airConditionerLastLog?.localTemperature)}ºC" : "";
+    if (airConditionerLastLogJson != null) {
+      isOnText = airConditionerLastLogJson?.isOn == true ? "Ligado" : "Desligado";
+      offsetText = "${_numberFormatter.format(airConditionerLastLogJson?.offset)}ºC de variação";
+      setpointText = "${_numberFormatter.format(airConditionerLastLogJson?.setpoint)}ºC de temperatura alvo";
+      useRemoteText = airConditionerLastLogJson?.useRemote == true ? "Usa remoto" : "Não usa remoto";
+      temperatureText = "${_numberFormatter.format(airConditionerLastLogJson?.localTemperature)}ºC";
 
-      // isOn = airConditionerLastLog.isOn;
-      // temperature = airConditionerLastLog.localTemperature;
+      isOn = airConditionerLastLogJson.isOn;
+      temperature = airConditionerLastLogJson.localTemperature;
     } else {
       isOnText = airConditionerConfigurationModel?.isOn == true ? "Ligar" : "Desligar";
       offsetText = "Com ${_numberFormatter.format(airConditionerConfigurationModel?.offset)}ºC de variação";

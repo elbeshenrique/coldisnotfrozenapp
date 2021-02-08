@@ -1,4 +1,4 @@
-abstract class AirConditionerJsonLog {
+abstract class AirConditionerLogJson {
   final double offset;
   final num setpoint;
   final bool isOn;
@@ -7,7 +7,7 @@ abstract class AirConditionerJsonLog {
   final num remoteTemperature;
   final bool relayStatus;
 
-  const AirConditionerJsonLog({
+  const AirConditionerLogJson({
     this.offset,
     this.setpoint,
     this.isOn,

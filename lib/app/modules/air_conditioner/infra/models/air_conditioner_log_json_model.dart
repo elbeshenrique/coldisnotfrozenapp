@@ -2,7 +2,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_log_json.dart';
 
 @jsonSerializable
-class AirConditionerLogJsonModel extends AirConditionerJsonLog {
+class AirConditionerLogJsonModel extends AirConditionerLogJson {
   AirConditionerLogJsonModel({
     offset,
     setpoint,
