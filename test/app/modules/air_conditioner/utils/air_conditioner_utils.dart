@@ -26,12 +26,8 @@ final airConditionerConfigurationListResponseData = """
 
 
 final airConditionerLogModelMock = AirConditionerLogModel(
-  offset: 0,
-  setpoint: 0,
-  useRemote: false,
-  isOn: true,
-  relayStatus: false,
-  createdAt: null
+  json: "{'localTemperature':0,'remoteTemperature':0,'useRemote':false,'isOn':true,'relayStatus':false,'setpoint':0,'offset':0}",
+  createdAt: "2021-02-08"
 );
 
 final airConditionerLogListResponseData = """
@@ -39,8 +35,8 @@ final airConditionerLogListResponseData = """
     "data": {
         "airconditioner_log": [
             {
-                "created_at": null,
-                "json": "{\"localTemperature\":0,\"remoteTemperature\":0,\"useRemote\":false,\"isOn\":true,\"relayStatus\":false,\"setpoint\":0,\"offset\":0}"
+                "created_at": "2021-02-08",
+                "json": "{'localTemperature':0,'remoteTemperature':0,'useRemote':false,'isOn':true,'relayStatus':false,'setpoint':0,'offset':0}"
             }
         ]
     }

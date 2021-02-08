@@ -6,7 +6,7 @@ part of 'google_athenticator_driver_impl.dart';
 // InjectionGenerator
 // **************************************************************************
 
-final $GoogleAuthenticatorDataSourceImpl = BindInject(
+final $GoogleAuthenticatorDriverImpl = BindInject(
   (i) => GoogleAuthenticatorDriverImpl(i<GoogleSignIn>()),
   singleton: false,
   lazy: true,

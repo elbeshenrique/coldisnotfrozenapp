@@ -3,24 +3,11 @@ import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_cond
 
 @jsonSerializable
 class AirConditionerLogModel extends AirConditionerLog {
-  final double offset;
-  final num setpoint;
-  final bool isOn;
-  final bool useRemote;
-  final double localTemperature;
-  final num remoteTemperature;
-  final bool relayStatus;
-  
-  String createdAt;
-
   AirConditionerLogModel({
-    this.offset,
-    this.setpoint,
-    this.isOn,
-    this.useRemote,
-    this.localTemperature,
-    this.remoteTemperature,
-    this.relayStatus,
-    this.createdAt,
-  });
+    createdAt,
+    json,
+  }) : super(
+          createdAt: createdAt,
+          json: json,
+        );
 }

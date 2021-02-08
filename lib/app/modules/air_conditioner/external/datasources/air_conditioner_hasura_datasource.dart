@@ -75,11 +75,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
     }
 
     var airConditionerLogMap = airConditionerLogList[0];
-    String airConditionerLogJson = airConditionerLogMap["json"];
-    String airConditionerLogCreatedAt = airConditionerLogMap["created_at"];
-
-    var airConditionerLogModel = jsonSerializer.deserialize<AirConditionerLogModel>(airConditionerLogJson);
-    airConditionerLogModel.createdAt = airConditionerLogCreatedAt;
+    var airConditionerLogModel = jsonSerializer.adapt<AirConditionerLogModel>(airConditionerLogMap);
     return airConditionerLogModel;
   }
 }

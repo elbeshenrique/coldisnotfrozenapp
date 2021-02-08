@@ -80,14 +80,14 @@ class _AirConditionerListWidgetState extends State<AirConditionerListWidget> {
     double temperature = 0;
 
     if (airConditionerLastLog != null) {
-      isOnText = airConditionerLastLog?.isOn == true ? "Ligado" : "Desligado";
-      offsetText = "${_numberFormatter.format(airConditionerLastLog?.offset)}ºC de variação";
-      setpointText = "${_numberFormatter.format(airConditionerLastLog?.setpoint)}ºC de temperatura alvo";
-      useRemoteText = airConditionerLastLog?.useRemote == true ? "Usa remoto" : "Não usa remoto";
-      temperatureText = airConditionerLastLog != null ? "${_numberFormatter.format(airConditionerLastLog?.localTemperature)}ºC" : "";
+      // isOnText = airConditionerLastLog?.isOn == true ? "Ligado" : "Desligado";
+      // offsetText = "${_numberFormatter.format(airConditionerLastLog?.offset)}ºC de variação";
+      // setpointText = "${_numberFormatter.format(airConditionerLastLog?.setpoint)}ºC de temperatura alvo";
+      // useRemoteText = airConditionerLastLog?.useRemote == true ? "Usa remoto" : "Não usa remoto";
+      // temperatureText = airConditionerLastLog != null ? "${_numberFormatter.format(airConditionerLastLog?.localTemperature)}ºC" : "";
 
-      isOn = airConditionerLastLog.isOn;
-      temperature = airConditionerLastLog.localTemperature;
+      // isOn = airConditionerLastLog.isOn;
+      // temperature = airConditionerLastLog.localTemperature;
     } else {
       isOnText = airConditionerConfigurationModel?.isOn == true ? "Ligar" : "Desligar";
       offsetText = "Com ${_numberFormatter.format(airConditionerConfigurationModel?.offset)}ºC de variação";

@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:dart_json_mapper_mobx/dart_json_mapper_mobx.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_modular/flutter_modular_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_model.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
+import 'package:guard_class/main.mapper.g.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:guard_class/app/app_module.dart';
@@ -19,25 +23,27 @@ class DioMock extends Mock implements Dio {}
 class JsonSerializerMock extends Mock implements BaseJsonSerializer {}
 
 main() {
-  final jsonSerializerMock = JsonSerializerMock();
+  initializeJsonMapper();
+  JsonMapper().useAdapter(mobXAdapter);
+  
+  // final jsonSerializerMock = JsonSerializerMock();
   final dioMock = DioMock();
 
   initModule(AppModule(), changeBinds: [
-    Bind((i) => jsonSerializerMock),
+    // Bind((i) => jsonSerializerMock),
   ]);
 
   final datasource = AirConditionerHasuraDataSource(dioMock);
 
   setUpAll(() {
-    when(jsonSerializerMock.adaptList<AirConditionerConfigurationModel>(any)).thenReturn(
-      <AirConditionerConfigurationModel>[
-        airConditionerConfigurationModelMock,
-      ],
-    );
+    // when(jsonSerializerMock.adapt<AirConditionerLogModel>(any)).thenReturn(airConditionerLogModelMock);
+    // when(jsonSerializerMock.adaptList<AirConditionerConfigurationModel>(any)).thenReturn(<AirConditionerConfigurationModel>[
+    //   airConditionerConfigurationModelMock
+    // ]);
   });
 
   group("getConfigurationList", () {
-    test("should return a list of AirConditionerConfiguration", () async {
+    test("should return a list of AirConditionerConfigurationModel", () async {
       when(dioMock.post(any, data: anyNamed("data"), options: anyNamed("options"))).thenAnswer(
         (_) async => Response(data: jsonDecode(airConditionerConfigurationListResponseData), statusCode: 200),
       );
@@ -52,14 +58,14 @@ main() {
       expect(future, throwsA(isA<DatasourceError>()));
     });
   });
-  
+
   group("getLastLog", () {
-    test("should return a list of AirConditionerConfiguration", () async {
+    test("should return AirConditionerLogModel", () async {
       when(dioMock.post(any, data: anyNamed("data"), options: anyNamed("options"))).thenAnswer(
-        (_) async => Response(data: jsonDecode(airConditionerConfigurationListResponseData), statusCode: 200),
+        (_) async => Response(data: jsonDecode(airConditionerLogListResponseData), statusCode: 200),
       );
-      final result = await datasource.getLastLog(any);
-      expect(result, isA<List<AirConditionerConfigurationModel>>());
+      final result = await datasource.getLastLog("id");
+      expect(result, isA<AirConditionerLogModel>());
     });
   });
 }

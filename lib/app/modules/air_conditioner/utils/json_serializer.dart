@@ -2,6 +2,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 
 abstract class BaseJsonSerializer {
   T deserialize<T>(String json);
+  T adapt<T>(dynamic object);
   List<T> adaptList<T>(List<dynamic> list);
 }
 
@@ -14,11 +15,17 @@ class DartJsonMapperSerializer implements BaseJsonSerializer {
   }
 
   @override
+  T adapt<T>(dynamic object) {
+    T deserializedObject = JsonMapper.fromMap<T>(object);
+    return deserializedObject;
+  }
+
+  @override
   List<T> adaptList<T>(List<dynamic> list) {
     var deserializedModelList = new List<T>();
 
     for (var item in list) {
-      var deserializedModel = JsonMapper.fromMap<T>(item);
+      var deserializedModel = adapt<T>(item);
       deserializedModelList.add(deserializedModel);
     }
 
