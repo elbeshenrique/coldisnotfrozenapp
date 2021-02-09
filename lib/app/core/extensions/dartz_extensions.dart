@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 
 extension DartzExtensions<L, R> on Either<L, R> {
-  R foldAlwaysRight(Function handleLeft) {
+  R foldAlwaysRight([Function handleLeft]) {
     R rightValue;
     this.fold(
       (left) {
-        handleLeft(left);
+        handleLeft?.call(left);
         return null;
       },
       (right) {
@@ -14,5 +14,17 @@ extension DartzExtensions<L, R> on Either<L, R> {
     );
 
     return rightValue;
+  }
+
+  L foldAlwaysLeft() {
+    L leftValue;
+    this.fold(
+      (left) {
+        leftValue = left;
+      },
+      id,
+    );
+
+    return leftValue;
   }
 }
