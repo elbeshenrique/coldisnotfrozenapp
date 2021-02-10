@@ -9,7 +9,7 @@ class SplashScreenPage extends StatelessWidget {
         return Modular.to.pushNamedAndRemoveUntil("/login", (_) => false);
       }
 
-      return Modular.to.pushNamedAndRemoveUntil("/home", (_) => false);
+      return Modular.to.pushNamedAndRemoveUntil("/air_conditioner", (_) => false);
     });
   }
 

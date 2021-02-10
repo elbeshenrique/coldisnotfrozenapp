@@ -3,18 +3,18 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/core/stores/auth_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/widgets/air_conditioner_list_widget.dart';
 
-class HomePage extends StatefulWidget {
+class AirConditionerPage extends StatefulWidget {
   final String title;
-  const HomePage({Key key, this.title = "Cold Is Not Frozen"}) : super(key: key);
+  const AirConditionerPage({Key key, this.title = "Cold Is Not Frozen"}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _AirConditionerPageState createState() => _AirConditionerPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AirConditionerPageState extends State<AirConditionerPage> {
   final _authStore = Modular.get<AuthStore>();
 
-  _HomePageState();
+  _AirConditionerPageState();
 
   @override
   initState() {
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildBody() {
-    return AirConditionerListWidget();
+    return new AirConditionerListWidget();
   }
 
   @override

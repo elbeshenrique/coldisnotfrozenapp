@@ -68,6 +68,6 @@ abstract class _LoginControllerBase with Store {
       return;
     }
 
-    Modular.to.pushReplacementNamed('/home');
+    Modular.to.pushReplacementNamed(Modular.initialRoute);
   }
 }
