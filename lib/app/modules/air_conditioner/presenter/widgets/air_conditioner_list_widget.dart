@@ -35,7 +35,7 @@ class _AirConditionerListWidgetState extends State<AirConditionerListWidget> {
   }
 
   Future<void> _fetchAndLoadAirConditionerData() {
-    return _airConditionerStore.getConfigurationList();
+    return _airConditionerStore.loadItemModelList();
   }
 
   _buildWidget() {

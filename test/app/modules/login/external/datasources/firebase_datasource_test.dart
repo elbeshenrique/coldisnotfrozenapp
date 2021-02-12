@@ -35,7 +35,7 @@ class FirebaseAuthMock extends Mock implements FirebaseAuth {
     Duration timeout = const Duration(seconds: 30),
     int forceResendingToken,
   }) async {
-    Future.delayed(Duration(milliseconds: 800)).then((value) {
+    Future.delayed(Duration(seconds: 0)).then((value) {
       if (phoneNumber == "0") {
         verificationCompleted(phoneAuthCredentialMock);
       } else if (phoneNumber == "1") {

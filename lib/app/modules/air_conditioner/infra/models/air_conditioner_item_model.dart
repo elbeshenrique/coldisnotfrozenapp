@@ -1,18 +1,15 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-
-import 'air_conditioner_configuration_model.dart';
-import 'air_conditioner_log_json_model.dart';
-import 'air_conditioner_log_model.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
 
 @jsonSerializable
-class AirConditionerItemModel {
-  final AirConditionerConfigurationModel configuration;
-  final AirConditionerLogModel lastLog;
-  final AirConditionerLogJsonModel lastLogJson;
-
+class AirConditionerItemModel extends AirConditionerItem {
   AirConditionerItemModel({
-    this.configuration,
-    this.lastLog,
-    this.lastLogJson,
-  });
+    configuration,
+    lastLog,
+    lastLogJson,
+  }) : super(
+          configuration: configuration,
+          lastLog: lastLog,
+          lastLogJson: lastLogJson,
+        );
 }

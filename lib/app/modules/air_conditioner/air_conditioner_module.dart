@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
-import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_last_log.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_item_model_list.dart';
 import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/repositories/air_conditioner_repository_impl.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/air_conditioner_page.dart';
@@ -16,8 +15,7 @@ class AirConditionerModule extends ChildModule {
         Bind((i) => DartJsonMapperSerializer()),
         Bind((i) => AirConditionerHasuraDataSource(i())),
         Bind((i) => AirConditionerRepositoryImpl(i())),
-        Bind((i) => GetAirConditionerConfigurationListImpl(i())),
-        Bind((i) => GetAirConditionerLastLogImpl(i())),
+        Bind((i) => GetAirConditionerItemModelListImpl(i(), i())),
       ];
 
   @override

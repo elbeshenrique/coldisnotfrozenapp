@@ -30,9 +30,9 @@ extension DartzExtensions<L extends Exception, R> on Either<L, R> {
 
   
 
-  bool isFailure(Function(Exception) handleException) {
+  bool isFailure([Function(Exception) handleException]) {
     if (isLeft()) {
-      handleException(this.getLeft());
+      handleException?.call(this.getLeft());
       return true;
     }
 

@@ -31,14 +31,14 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
       Atom(name: '_AirConditionerStoreBase.airConditionerConfigurationList');
 
   @override
-  ObservableList<AirConditionerItemModel> get airConditionerConfigurationList {
+  ObservableList<AirConditionerItem> get airConditionerConfigurationList {
     _$airConditionerConfigurationListAtom.reportRead();
     return super.airConditionerConfigurationList;
   }
 
   @override
   set airConditionerConfigurationList(
-      ObservableList<AirConditionerItemModel> value) {
+      ObservableList<AirConditionerItem> value) {
     _$airConditionerConfigurationListAtom
         .reportWrite(value, super.airConditionerConfigurationList, () {
       super.airConditionerConfigurationList = value;
@@ -49,8 +49,7 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
       ActionController(name: '_AirConditionerStoreBase');
 
   @override
-  void _setAirConditionerConfigurationList(
-      List<AirConditionerItemModel> value) {
+  void _setAirConditionerConfigurationList(List<AirConditionerItem> value) {
     final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
         name: '_AirConditionerStoreBase._setAirConditionerConfigurationList');
     try {

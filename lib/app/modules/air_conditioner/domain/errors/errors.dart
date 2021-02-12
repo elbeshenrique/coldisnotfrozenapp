@@ -11,3 +11,8 @@ class RepositoryError extends AirConditionerFailure {
   final String message;
   RepositoryError({this.message});
 }
+
+class GetAirConditionerItemModelListError extends AirConditionerFailure {
+  final String message;
+  GetAirConditionerItemModelListError({this.message});
+}
