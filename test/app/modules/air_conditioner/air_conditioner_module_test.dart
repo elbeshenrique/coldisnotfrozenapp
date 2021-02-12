@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_modular/flutter_modular_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:guard_class/app/core/stores/ar_conditioner_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/air_conditioner_module.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/repositories/air_conditioner_repository.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_configuration_list.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_last_log.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 main() {

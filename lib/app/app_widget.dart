@@ -10,7 +10,7 @@ class AppWidget extends StatelessWidget {
       navigatorKey: Modular.navigatorKey,
       title: 'Cold Is Not Frozen',
       theme: ThemeDataConfiguration.getThemeData(context),
-      initialRoute: '/',
+      initialRoute: Modular.initialRoute,
       builder: asuka.builder,
       onGenerateRoute: Modular.generateRoute,
     );

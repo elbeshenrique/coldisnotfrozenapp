@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-extension DartzExtensions<L, R> on Either<L, R> {
-  R foldAlwaysRight([Function handleLeft]) {
+extension DartzExtensions<L extends Exception, R> on Either<L, R> {
+  R getRight([Function handleLeft]) {
     R rightValue;
     this.fold(
       (left) {
@@ -16,7 +16,7 @@ extension DartzExtensions<L, R> on Either<L, R> {
     return rightValue;
   }
 
-  L foldAlwaysLeft() {
+  L getLeft() {
     L leftValue;
     this.fold(
       (left) {
@@ -26,5 +26,16 @@ extension DartzExtensions<L, R> on Either<L, R> {
     );
 
     return leftValue;
+  }
+
+  
+
+  bool isFailure(Function(Exception) handleException) {
+    if (isLeft()) {
+      handleException(this.getLeft());
+      return true;
+    }
+
+    return false;
   }
 }

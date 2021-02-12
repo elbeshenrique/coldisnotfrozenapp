@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/core/stores/ar_conditioner_store.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
 import 'package:intl/intl.dart';
 
 class AirConditionerListWidget extends StatefulWidget {

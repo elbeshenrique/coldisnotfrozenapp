@@ -3,6 +3,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:mobx/mobx.dart';
 
 import "package:guard_class/app/core/extensions/dartz_extensions.dart";
@@ -40,39 +42,50 @@ abstract class _AirConditionerStoreBase with Store {
   Future getConfigurationList() async {
     try {
       final configurationListUsecase = Modular.get<GetAirConditionerConfigurationList>();
-      final lastLogUsecase = Modular.get<GetAirConditionerLastLog>();
-      final airConditionerItemModelList = List<AirConditionerItemModel>();
-      final jsonSerializer = Modular.get<BaseJsonSerializer>();
-
       final configurationListEither = await configurationListUsecase();
-      if (configurationListEither.isLeft()) {
-        throw configurationListEither.foldAlwaysLeft();
-      }
-      final configurationList = configurationListEither.foldAlwaysRight();
-
-      for (final configuration in configurationList) {
-        final logEither = await lastLogUsecase(configuration.id);
-        if (logEither.isLeft()) {
-          throw logEither.foldAlwaysLeft();
-        }
-        final log = logEither.foldAlwaysRight();
-
-        var logJson = jsonSerializer.deserialize<AirConditionerLogJsonModel>(log?.json);
-
-        airConditionerItemModelList.add(AirConditionerItemModel(
-          configuration: configuration,
-          lastLog: log,
-          lastLogJson: logJson,
-        ));
+      if (configurationListEither.isFailure(handleException)) {
+        return;
       }
 
+      final configurationList = configurationListEither.getRight();
+      final airConditionerItemModelListEither = await _getItemModelListFromConfigurationList(configurationList);
+      if (airConditionerItemModelListEither.isFailure(handleException)) {
+        return;
+      }
+
+      final airConditionerItemModelList = airConditionerItemModelListEither.getRight();
       _setAirConditionerConfigurationList(airConditionerItemModelList);
     } catch (e) {
       handleException(e);
     }
   }
 
-  handleException(dynamic exception) {
+  Future<Either<AirConditionerFailure, List<AirConditionerItemModel>>> _getItemModelListFromConfigurationList(List<AirConditionerConfiguration> configurationList) async {
+    final lastLogUsecase = Modular.get<GetAirConditionerLastLog>();
+    final jsonSerializer = Modular.get<BaseJsonSerializer>();
+
+    final airConditionerItemModelList = List<AirConditionerItemModel>();
+
+    for (final configuration in configurationList) {
+      final logEither = await lastLogUsecase(configuration.id);
+      if (logEither.isLeft()) {
+        return Left(logEither.getLeft());
+      }
+
+      final lastLog = logEither.getRight();
+      final lastLogJson = jsonSerializer.deserialize<AirConditionerLogJsonModel>(lastLog?.json);
+
+      airConditionerItemModelList.add(AirConditionerItemModel(
+        configuration: configuration,
+        lastLog: lastLog,
+        lastLogJson: lastLogJson,
+      ));
+    }
+
+    return Right(airConditionerItemModelList);
+  }
+
+  handleException(Exception exception) {
     asuka.showSnackBar(SnackBar(content: Text(exception.toString() ?? "")));
   }
 }
