@@ -38,12 +38,19 @@ main() {
     expect(result | null, isA<List<AirConditionerItem>>());
   });
   test("should return a GetAirConditionerItemModelListError if the repository fails on getConfigurationList", () async {
-    when(repositoryMock.getConfigurationList()).thenThrow(Exception());
+    when(repositoryMock.getConfigurationList()).thenAnswer((_) async => Left(RepositoryError()));
     final result = await usecase();
     expect(result.fold(id, id), isA<GetAirConditionerItemModelListError>());
   });
   test("should return a GetAirConditionerItemModelListError if the repository fails on getLastLog", () async {
-    when(repositoryMock.getLastLog(any)).thenThrow(Exception());
+    when(repositoryMock.getConfigurationList()).thenAnswer(
+      (_) async => Right(
+        <AirConditionerConfigurationMock>[
+          AirConditionerConfigurationMock()
+        ],
+      ),
+    );
+    when(repositoryMock.getLastLog(any)).thenAnswer((_) async => Left(RepositoryError()));
     final result = await usecase();
     expect(result.fold(id, id), isA<GetAirConditionerItemModelListError>());
   });

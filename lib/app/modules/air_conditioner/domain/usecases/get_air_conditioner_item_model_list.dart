@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import "package:guard_class/app/core/extensions/dartz_extensions.dart";
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_log.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/repositories/air_conditioner_repository.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
@@ -50,17 +51,22 @@ class GetAirConditionerItemModelListImpl implements GetAirConditionerItemModelLi
       }
 
       final lastLog = logEither.getRight();
-      final lastLogJson = jsonSerializer.deserialize<AirConditionerLogJsonModel>(lastLog?.json);
-
-      airConditionerItemModelList.add(
-        AirConditionerItemModel(
-          configuration: configuration,
-          lastLog: lastLog,
-          lastLogJson: lastLogJson,
-        ),
-      );
+      final airConditionerItemModel = _makeItemModel(lastLog, configuration);
+      airConditionerItemModelList.add(airConditionerItemModel);
     }
 
     return airConditionerItemModelList;
+  }
+
+  AirConditionerItemModel _makeItemModel(AirConditionerLog lastLog, AirConditionerConfiguration configuration) {
+    final lastLogJson = jsonSerializer.deserialize<AirConditionerLogJsonModel>(lastLog?.json);
+
+    final airConditionerItemModel = AirConditionerItemModel(
+      configuration: configuration,
+      lastLog: lastLog,
+      lastLogJson: lastLogJson,
+    );
+
+    return airConditionerItemModel;
   }
 }
