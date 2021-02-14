@@ -11,7 +11,7 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 abstract class GetAirConditionerItemModelList {
-  Future<Either<AirConditionerFailure, List<AirConditionerItem>>> call();
+  Future<Either<AirConditionerError, List<AirConditionerItem>>> call();
 }
 
 class GetAirConditionerItemModelListImpl implements GetAirConditionerItemModelList {
@@ -21,7 +21,7 @@ class GetAirConditionerItemModelListImpl implements GetAirConditionerItemModelLi
   GetAirConditionerItemModelListImpl(this.repository, this.jsonSerializer);
 
   @override
-  Future<Either<AirConditionerFailure, List<AirConditionerItem>>> call() async {
+  Future<Either<AirConditionerError, List<AirConditionerItem>>> call() async {
     try {
       final result = await _getItemModelList();
       return Right(result);

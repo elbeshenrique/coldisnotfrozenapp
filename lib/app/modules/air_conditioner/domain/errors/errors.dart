@@ -1,18 +1,18 @@
-abstract class AirConditionerFailure implements Exception {
+abstract class AirConditionerError implements Exception {
   String get message;
 }
 
-class DatasourceError extends AirConditionerFailure {
+class DatasourceError extends AirConditionerError {
   final String message;
   DatasourceError({this.message});
 }
 
-class RepositoryError extends AirConditionerFailure {
+class RepositoryError extends AirConditionerError {
   final String message;
   RepositoryError({this.message});
 }
 
-class GetAirConditionerItemModelListError extends AirConditionerFailure {
+class GetAirConditionerItemModelListError extends AirConditionerError {
   final String message;
   GetAirConditionerItemModelListError({this.message});
 }

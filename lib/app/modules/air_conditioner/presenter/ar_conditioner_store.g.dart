@@ -7,7 +7,7 @@ part of 'ar_conditioner_store.dart';
 // **************************************************************************
 
 final $AirConditionerStore = BindInject(
-  (i) => AirConditionerStore(),
+  (i) => AirConditionerStore(i<GetAirConditionerItemModelList>()),
   singleton: true,
   lazy: true,
 );
@@ -19,29 +19,18 @@ final $AirConditionerStore = BindInject(
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
-  Computed<bool> _$isLoadedComputed;
+  final _$stateAtom = Atom(name: '_AirConditionerStoreBase.state');
 
   @override
-  bool get isLoaded =>
-      (_$isLoadedComputed ??= Computed<bool>(() => super.isLoaded,
-              name: '_AirConditionerStoreBase.isLoaded'))
-          .value;
-
-  final _$airConditionerConfigurationListAtom =
-      Atom(name: '_AirConditionerStoreBase.airConditionerConfigurationList');
-
-  @override
-  ObservableList<AirConditionerItem> get airConditionerConfigurationList {
-    _$airConditionerConfigurationListAtom.reportRead();
-    return super.airConditionerConfigurationList;
+  AirConditionerState get state {
+    _$stateAtom.reportRead();
+    return super.state;
   }
 
   @override
-  set airConditionerConfigurationList(
-      ObservableList<AirConditionerItem> value) {
-    _$airConditionerConfigurationListAtom
-        .reportWrite(value, super.airConditionerConfigurationList, () {
-      super.airConditionerConfigurationList = value;
+  set state(AirConditionerState value) {
+    _$stateAtom.reportWrite(value, super.state, () {
+      super.state = value;
     });
   }
 
@@ -49,11 +38,11 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
       ActionController(name: '_AirConditionerStoreBase');
 
   @override
-  void _setAirConditionerConfigurationList(List<AirConditionerItem> value) {
+  dynamic setState(AirConditionerState value) {
     final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
-        name: '_AirConditionerStoreBase._setAirConditionerConfigurationList');
+        name: '_AirConditionerStoreBase.setState');
     try {
-      return super._setAirConditionerConfigurationList(value);
+      return super.setState(value);
     } finally {
       _$_AirConditionerStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -62,8 +51,7 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
   @override
   String toString() {
     return '''
-airConditionerConfigurationList: ${airConditionerConfigurationList},
-isLoaded: ${isLoaded}
+state: ${state}
     ''';
   }
 }

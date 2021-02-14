@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
 import 'package:intl/intl.dart';
 
 class AirConditionerListWidget extends StatefulWidget {
@@ -14,59 +17,60 @@ class AirConditionerListWidget extends StatefulWidget {
   _AirConditionerListWidgetState createState() => _AirConditionerListWidgetState();
 }
 
-class _AirConditionerListWidgetState extends State<AirConditionerListWidget> {
-  final _airConditionerStore = Modular.get<AirConditionerStore>();
+class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidget, AirConditionerStore> {
   final NumberFormat _numberFormatter = NumberFormat("0.##", "pt-br");
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
-  _AirConditionerListWidgetState();
+  // @override
+  // initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
+  //     _loadInitialInfos();
+  //   });
+  // }
 
-  @override
-  initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
-      _loadInitialInfos();
-    });
-  }
-
-  void _loadInitialInfos() {
-    _refreshIndicatorKey.currentState.show();
-  }
+  // void _loadInitialInfos() {
+  //   _refreshIndicatorKey.currentState.show();
+  // }
 
   Future<void> _fetchAndLoadAirConditionerData() {
-    return _airConditionerStore.loadItemModelList();
+    return controller.loadData();
   }
 
-  _buildWidget() {
-    return Center(
-      child: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: _fetchAndLoadAirConditionerData,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildAirConditionerListView(),
-          ],
-        ),
-      ),
+  _buildBasedOnState() {
+    return Observer(
+      builder: (_) {
+        var state = controller.state;
+
+        if (state is ErrorState) {
+          return _buildError(state.error);
+        }
+
+        if (state is StartState) {
+          return Center();
+        } else if (state is LoadingState) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is SuccessState) {
+          return _buildAirConditionerListView(state.list);
+        } else {
+          return Center();
+        }
+      },
     );
   }
 
-  _buildAirConditionerListView() {
-    return Expanded(
-      child: Observer(
-        builder: (_) => ListView.builder(
-          shrinkWrap: true,
-          itemCount: _airConditionerStore.airConditionerConfigurationList?.length ?? 0,
-          itemBuilder: _buildAirConditionerListViewItem,
-        ),
-      ),
+  Widget _buildAirConditionerListView(List<AirConditionerItem> list) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: list.length,
+      itemBuilder: (_, index) => _buildAirConditionerListViewItem(list, index),
     );
   }
 
-  Widget _buildAirConditionerListViewItem(BuildContext context, int index) {
-    var airConditionerItemModel = _airConditionerStore.airConditionerConfigurationList[index];
+  Widget _buildAirConditionerListViewItem(List<AirConditionerItem> list, int index) {
+    var airConditionerItemModel = list[index];
     var airConditionerConfigurationModel = airConditionerItemModel.configuration;
     var airConditionerLastLog = airConditionerItemModel.lastLog;
     var airConditionerLastLogJson = airConditionerItemModel.lastLogJson;
@@ -196,6 +200,38 @@ class _AirConditionerListWidgetState extends State<AirConditionerListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildWidget();
+    return Center(
+      child: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _fetchAndLoadAirConditionerData,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: _buildBasedOnState(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(AirConditionerError failure) {
+    // if (error is EmptyList) {
+    //   return Center(
+    //     child: Text('Nada encontrado'),
+    //   );
+    // } else if (error is ErrorSearch) {
+    //   return Center(
+    //     child: Text('Erro no github'),
+    //   );
+    // } else {
+    //   return Center(
+    //     child: Text('Erro interno'),
+    //   );
+    // }
+    return Center(
+      child: Text('Erro interno: ' + failure.message),
+    );
   }
 }

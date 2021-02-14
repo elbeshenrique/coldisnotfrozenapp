@@ -12,7 +12,7 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
   AirConditionerRepositoryImpl(this.datasource);
 
   @override
-  Future<Either<AirConditionerFailure, List<AirConditionerConfiguration>>> getConfigurationList() async {
+  Future<Either<AirConditionerError, List<AirConditionerConfiguration>>> getConfigurationList() async {
     try {
       final result = await datasource.getConfigurationList();
       return Right(result);
@@ -24,7 +24,7 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
   }
 
   @override
-  Future<Either<AirConditionerFailure, AirConditionerLog>> getLastLog(String id) async {
+  Future<Either<AirConditionerError, AirConditionerLog>> getLastLog(String id) async {
     try {
       final result = await datasource.getLastLog(id);
       return Right(result);
