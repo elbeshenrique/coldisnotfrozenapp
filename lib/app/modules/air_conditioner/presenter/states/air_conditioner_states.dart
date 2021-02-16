@@ -3,20 +3,20 @@ import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dar
 
 abstract class AirConditionerState {}
 
-class StartState implements AirConditionerState {
-  const StartState();
+class StartAirConditionerState implements AirConditionerState {
+  const StartAirConditionerState();
 }
 
-class LoadingState implements AirConditionerState {
-  const LoadingState();
+class LoadingAirConditionerState implements AirConditionerState {
+  const LoadingAirConditionerState();
 }
 
-class ErrorState implements AirConditionerState {
+class ErrorAirConditionerState implements AirConditionerState {
   final AirConditionerError error;
-  const ErrorState(this.error);
+  const ErrorAirConditionerState(this.error);
 }
 
-class SuccessState implements AirConditionerState {
+class SuccessAirConditionerState implements AirConditionerState {
   final List<AirConditionerItem> list;
-  const SuccessState(this.list);
+  const SuccessAirConditionerState(this.list);
 }

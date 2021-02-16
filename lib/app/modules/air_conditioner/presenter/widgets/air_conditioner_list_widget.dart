@@ -42,17 +42,17 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       builder: (_) {
         var state = controller.state;
 
-        if (state is ErrorState) {
+        if (state is ErrorAirConditionerState) {
           return _buildError(state.error);
         }
 
-        if (state is StartState) {
+        if (state is StartAirConditionerState) {
           return Center();
-        } else if (state is LoadingState) {
+        } else if (state is LoadingAirConditionerState) {
           return Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state is SuccessState) {
+        } else if (state is SuccessAirConditionerState) {
           return _buildAirConditionerListView(state.list);
         } else {
           return Center();

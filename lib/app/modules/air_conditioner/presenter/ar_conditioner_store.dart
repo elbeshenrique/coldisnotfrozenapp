@@ -14,30 +14,30 @@ abstract class _AirConditionerStoreBase with Store {
   CancelableOperation cancellableOperation;
 
   _AirConditionerStoreBase(this.getAirConditionerItemModelList) {
-    _stateReaction(cancellableOperation);
+    stateReaction(cancellableOperation);
   }
 
   @observable
-  AirConditionerState state = StartState();
+  AirConditionerState state = StartAirConditionerState();
 
   @action
   setState(AirConditionerState value) => state = value;
 
-  Future _stateReaction([CancelableOperation cancellableOperation]) async {
+  Future stateReaction([CancelableOperation cancellableOperation]) async {
     await cancellableOperation?.cancel();
-    cancellableOperation = CancelableOperation<AirConditionerState>.fromFuture(_getData());
+    cancellableOperation = CancelableOperation<AirConditionerState>.fromFuture(getData());
 
-    setState(LoadingState());
+    setState(LoadingAirConditionerState());
 
-    setState(await cancellableOperation.valueOrCancellation(LoadingState()));
+    setState(await cancellableOperation.valueOrCancellation(LoadingAirConditionerState()));
   }
 
-  Future<AirConditionerState> _getData() async {
+  Future<AirConditionerState> getData() async {
     var result = await getAirConditionerItemModelList();
-    return result.fold((l) => ErrorState(l), (r) => SuccessState(r));
+    return result.fold((l) => ErrorAirConditionerState(l), (r) => SuccessAirConditionerState(r));
   }
 
   Future loadData() async {
-    setState(await _getData());
+    setState(await getData());
   }
 }
