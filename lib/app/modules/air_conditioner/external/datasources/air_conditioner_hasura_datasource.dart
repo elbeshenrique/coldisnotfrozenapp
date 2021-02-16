@@ -6,9 +6,9 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 class AirConditionerHasuraDataSource implements AirConditionerDataSource {
-  static const String HASURA_URL = "https://hasura-melon.herokuapp.com/v1/graphql";
+  static const String HASURA_URL = "https://hasura-cold.hasura.app/v1/graphql";
   static const String HASURA_ADMIN_SECRET_KEY = "x-hasura-admin-secret";
-  static const String HASURA_ADMIN_SECRET_VALUE = "D9rz5x8Se3RjaTzL";
+  static const String HASURA_ADMIN_SECRET_VALUE = "kVkFOnBfnII8HcGhC7EYSUj7DRM8m4RvxdG3KGRG9jA0sedkAQRVuZLoWTgs1YZF";
   static const String HASURA_QUERY_KEY = "query";
   static const String APPLICATION_JSON = "application/json";
 
