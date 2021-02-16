@@ -1,9 +1,10 @@
+import 'package:asuka/asuka.dart' as asuka;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:asuka/asuka.dart' as asuka;
+
 import 'package:guard_class/app/core/stores/theme_store.dart';
-import 'package:guard_class/app/core/theme/theme_data.dart';
+import 'package:guard_class/app/core/theme/theme_data_configuration.dart';
 
 ThemeData lightTheme = ThemeDataConfiguration.instance.getLightTheme();
 ThemeData darkTheme = ThemeDataConfiguration.instance.getDarkTheme();
@@ -45,7 +46,7 @@ class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
       builder: (_) => MaterialApp(
         navigatorKey: Modular.navigatorKey,
         title: 'Cold Is Not Frozen',
-        theme: _themeStore.brightness == Brightness.dark ? darkTheme : lightTheme,
+        theme: _themeStore.brightness == Brightness.dark ? ThemeDataConfiguration.instance.getDarkTheme() : ThemeDataConfiguration.instance.getLightTheme(),
         initialRoute: Modular.initialRoute,
         builder: asuka.builder,
         onGenerateRoute: Modular.generateRoute,
