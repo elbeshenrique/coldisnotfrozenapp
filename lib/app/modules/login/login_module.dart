@@ -21,8 +21,8 @@ import 'presenter/utils/loading_dialog.dart';
 
 class LoginModule extends ChildModule {
   static List<Bind> export = [
-    Bind((i) => GoogleSignIn()),
-    Bind((i) => GoogleAuthenticatorDriverImpl(i())),
+    Bind<GoogleSignIn>((i) => GoogleSignIn()),
+    $GoogleAuthenticatorDriverImpl,
     $GetLoggedUserImpl,
     $LogoutImpl,
     $LoginRepositoryImpl,

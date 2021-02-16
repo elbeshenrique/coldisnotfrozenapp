@@ -3,16 +3,6 @@
 part of 'ar_conditioner_store.dart';
 
 // **************************************************************************
-// InjectionGenerator
-// **************************************************************************
-
-final $AirConditionerStore = BindInject(
-  (i) => AirConditionerStore(i<GetAirConditionerItemModelList>()),
-  singleton: true,
-  lazy: true,
-);
-
-// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 

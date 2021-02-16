@@ -1,17 +1,15 @@
 import 'dart:convert';
 
-import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:dart_json_mapper_mobx/dart_json_mapper_mobx.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_modular/flutter_modular_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:guard_class/app/modules/air_conditioner/air_conditioner_module.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_model.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:guard_class/app/app_module.dart';
 import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
 
@@ -22,17 +20,14 @@ class DioMock extends Mock implements Dio {}
 class JsonSerializerMock extends Mock implements BaseJsonSerializer {}
 
 main() {
-  // initializeJsonMapper();
-  // JsonMapper().useAdapter(mobXAdapter);
-  
   final jsonSerializerMock = JsonSerializerMock();
   final dioMock = DioMock();
 
-  initModule(AppModule(), changeBinds: [
+  initModule(AirConditionerModule(), changeBinds: [
     Bind((i) => jsonSerializerMock),
   ]);
 
-  final datasource = AirConditionerHasuraDataSource(dioMock);
+  final datasource = AirConditionerHasuraDataSource(dioMock, jsonSerializerMock);
 
   setUpAll(() {
     when(jsonSerializerMock.adapt<AirConditionerLogModel>(any)).thenReturn(airConditionerLogModelMock);

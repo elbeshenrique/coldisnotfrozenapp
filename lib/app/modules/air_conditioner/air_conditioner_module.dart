@@ -14,10 +14,10 @@ class AirConditionerModule extends ChildModule {
   List<Bind> get binds => [
         Bind<Dio>((i) => Dio()),
         Bind<BaseJsonSerializer>((i) => DartJsonMapperSerializer()),
-        Bind<AirConditionerDataSource>((i) => AirConditionerHasuraDataSource(i())),
+        Bind<AirConditionerDataSource>((i) => AirConditionerHasuraDataSource(i(), i())),
         Bind<AirConditionerRepository>((i) => AirConditionerRepositoryImpl(i())),
         Bind<GetAirConditionerItemModelList>((i) => GetAirConditionerItemModelListImpl(i(), i())),
-        $AirConditionerStore,
+        Bind<AirConditionerStore>((i) => AirConditionerStore(i())),
       ];
 
   @override

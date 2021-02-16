@@ -19,7 +19,7 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
     } on DatasourceError catch (e) {
       return Left(e);
     } catch (e) {
-      return Left(DatasourceError());
+      return Left(RepositoryError(message: e.toString()));
     }
   }
 
@@ -31,7 +31,7 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
     } on DatasourceError catch (e) {
       return Left(e);
     } catch (e) {
-      return Left(DatasourceError());
+      return Left(RepositoryError(message: e.toString()));
     }
   }
 }

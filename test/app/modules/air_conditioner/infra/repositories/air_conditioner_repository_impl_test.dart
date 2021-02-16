@@ -27,6 +27,12 @@ main() {
     test("should return an DatasourceError if the datasource fails", () async {
       when(datasource.getConfigurationList()).thenThrow(Exception());
       final result = await repository.getConfigurationList();
+      expect(result.fold(id, id), isA<RepositoryError>());
+    });
+
+    test("should return an DatasourceError if the datasource fails", () async {
+      when(datasource.getConfigurationList()).thenThrow(DatasourceError());
+      final result = await repository.getConfigurationList();
       expect(result.fold(id, id), isA<DatasourceError>());
     });
   });
@@ -40,6 +46,12 @@ main() {
 
     test("should return an DatasourceError if the datasource fails", () async {
       when(datasource.getLastLog(any)).thenThrow(Exception());
+      final result = await repository.getLastLog("id");
+      expect(result.fold(id, id), isA<RepositoryError>());
+    });
+
+    test("should return an DatasourceError if the datasource fails", () async {
+      when(datasource.getLastLog(any)).thenThrow(DatasourceError());
       final result = await repository.getLastLog("id");
       expect(result.fold(id, id), isA<DatasourceError>());
     });

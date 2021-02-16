@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
@@ -14,9 +13,9 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   static const String APPLICATION_JSON = "application/json";
 
   final Dio dio;
-  final BaseJsonSerializer jsonSerializer = Modular.get<BaseJsonSerializer>();
+  final BaseJsonSerializer jsonSerializer;
 
-  AirConditionerHasuraDataSource(this.dio);
+  AirConditionerHasuraDataSource(this.dio, this.jsonSerializer);
 
   @override
   Future<List<AirConditionerConfigurationModel>> getConfigurationList() async {

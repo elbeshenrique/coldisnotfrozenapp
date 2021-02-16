@@ -8,13 +8,20 @@ import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
+import 'package:mockito/mockito.dart';
+
+class DioMock extends Mock implements Dio {}
 
 main() {
-  initModule(AirConditionerModule());
+  final dioMock = DioMock();
+
+  initModule(AirConditionerModule(), changeBinds: [
+    Bind<Dio>((i) => dioMock),
+  ]);
 
   test("should retrieve Dio instance", () {
     final usecase = Modular.get<Dio>();
-    expect(usecase, isA<Dio>());
+    expect(usecase, isA<DioMock>());
   });
   test("should retrieve BaseMapperSerializer instance", () {
     final usecase = Modular.get<BaseJsonSerializer>();

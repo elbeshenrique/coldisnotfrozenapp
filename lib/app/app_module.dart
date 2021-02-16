@@ -14,8 +14,8 @@ class AppModule extends MainModule {
   List<Bind> get binds => [
         ...LoginModule.export,
         $AuthStore,
-        Bind((i) => FirebaseAuth.instance),
-        Bind((i) => Connectivity()),
+        Bind<FirebaseAuth>((i) => FirebaseAuth.instance),
+        Bind<Connectivity>((i) => Connectivity()),
       ];
 
   @override

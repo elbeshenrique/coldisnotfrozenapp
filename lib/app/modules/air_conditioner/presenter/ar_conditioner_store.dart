@@ -1,12 +1,10 @@
 import 'package:async/async.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_item_model_list.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
 import 'package:mobx/mobx.dart';
 
 part 'ar_conditioner_store.g.dart';
 
-@Injectable()
 class AirConditionerStore = _AirConditionerStoreBase with _$AirConditionerStore;
 
 abstract class _AirConditionerStoreBase with Store {
