@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:guard_class/app/core/extensions/dartz_extensions.dart';
-import 'package:mockito/mockito.dart';
 
 main() {
   final Either<Exception, String> leftExceptionMock = Left(Exception());
