@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
+
 import 'package:guard_class/app/modules/login/domain/entities/logged_user_info.dart';
+import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/login/domain/usecases/get_logged_user.dart';
 import 'package:guard_class/app/modules/login/domain/usecases/logout.dart';
-import 'package:mobx/mobx.dart';
-import 'package:asuka/asuka.dart' as asuka;
 
 part 'auth_store.g.dart';
 
@@ -27,19 +28,25 @@ abstract class _AuthStoreBase with Store {
 
   Future<bool> checkLogin() async {
     var result = await getLoggedUser();
-    return result.fold((l) => null, (user) {
-      setUser(user);
-      return true;
-    });
+    return result.fold(
+      (l) => false,
+      (user) {
+        setUser(user);
+        return true;
+      },
+    );
   }
 
-  Future signOut() async {
+  Future<Either<Failure, Unit>> signOut() async {
     var result = await logout();
-    result.fold((l) {
-      asuka.showSnackBar(SnackBar(content: Text(l.message)));
-    }, (r) {
-      setUser(null);
-      Modular.to.pushReplacementNamed("/login");
-    });
+    return result.fold(
+      (l) {
+        return result;
+      },
+      (r) {
+        setUser(null);
+        return result;
+      },
+    );
   }
 }

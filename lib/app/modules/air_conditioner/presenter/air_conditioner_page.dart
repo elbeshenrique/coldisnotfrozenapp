@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/core/stores/auth_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/widgets/air_conditioner_list_widget.dart';
+import 'package:asuka/asuka.dart' as asuka;
 
 class AirConditionerPage extends StatefulWidget {
   final String title;
@@ -33,7 +34,17 @@ class _AirConditionerPageState extends State<AirConditionerPage> {
       actions: <Widget>[
         FlatButton(
           textTheme: ButtonTextTheme.accent,
-          onPressed: _authStore.signOut,
+          onPressed: () async {
+            final result = await _authStore.signOut();
+            result.fold(
+              (failure) {
+                asuka.showSnackBar(SnackBar(content: Text(failure.message)));
+              },
+              (_) {
+                Modular.to.pushReplacementNamed("/login");
+              },
+            );
+          },
           child: Text("SAIR"),
         ),
       ],

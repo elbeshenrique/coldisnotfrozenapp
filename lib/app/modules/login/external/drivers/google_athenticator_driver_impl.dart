@@ -36,7 +36,11 @@ class GoogleAuthenticatorDriverImpl implements GoogleAuthenticatorDriver {
     return googleAuthCredential;
   }
 
-  Future<GoogleIdentity> disconnect() async {
-    return await googleSignIn.disconnect();
+  Future disconnect() async {
+    if (googleSignIn.currentUser == null) {
+      return;
+    }
+
+    await googleSignIn.disconnect();
   }
 }

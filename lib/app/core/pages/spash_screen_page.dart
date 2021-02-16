@@ -5,7 +5,7 @@ import 'package:guard_class/app/core/stores/auth_store.dart';
 class SplashScreenPage extends StatelessWidget {
   SplashScreenPage() {
     Modular.get<AuthStore>().checkLogin().then((value) {
-      if (value == null) {
+      if (!value) {
         return Modular.to.pushNamedAndRemoveUntil("/login", (_) => false);
       }
 

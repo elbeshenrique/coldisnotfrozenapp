@@ -12,15 +12,20 @@ main() {
   final service = ConnectivityServiceImpl(driver);
 
   group("ConnectivityServiceImpl", () {
-    test('should return bool', () async {
+    test('should return true if has connectivity', () async {
       when(driver.isOnline).thenAnswer((_) async => true);
       var result = await service.isOnline();
-      expect(result, isA<Right<dynamic, Unit>>());
+      expect(result | null, unit);
     });
-    test('should call ErrorLoginEmail', () async {
-      when(service.isOnline()).thenThrow(ConnectionError());
+    test('should return false if has no connectivity', () async {
+      when(driver.isOnline).thenAnswer((_) async => false);
       var result = await service.isOnline();
-      expect(result.leftMap((l) => l is ConnectionError), Left(true));
+      expect(result.fold(id, id), isA<ConnectionError>());
+    });
+    test('should return ConnectionError if the ConnectivityDriver fails', () async {
+      when(driver.isOnline).thenThrow(Exception());
+      var result = await service.isOnline();
+      expect(result.fold(id, id), isA<ConnectionError>());
     });
   });
 }

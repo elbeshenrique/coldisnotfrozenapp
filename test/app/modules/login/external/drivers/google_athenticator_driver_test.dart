@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:guard_class/app/modules/login/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/login/external/drivers/google_athenticator_driver_impl.dart';
 import 'package:mockito/mockito.dart';
 
@@ -49,11 +48,21 @@ main() {
   group("disconnect", () {
     test("should complete disconnect", () async {
       when(googleSignInMock.disconnect()).thenAnswer((_) async => googleSignInAccountMock);
-      var result = await googleAuthenticatorDataSource.disconnect();
-      expect(result, isA<GoogleSignInAccount>());
+      var result = googleAuthenticatorDataSource.disconnect();
+      expect(result, completes);
+    });
+    test("should complete disconnect when GoogleSignIn returns null", () async {
+      when(googleSignInMock.disconnect()).thenAnswer((_) async => null);
+      var result = googleAuthenticatorDataSource.disconnect();
+      expect(result, completes);
     });
     test("should return error on disconnect", () async {
-      when(googleSignInMock.disconnect()).thenThrow(Exception());
+      when(googleSignInMock.currentUser).thenReturn(googleSignInAccountMock);
+      when(googleSignInMock.disconnect()).thenThrow(new Exception());
+      expect(googleAuthenticatorDataSource.disconnect(), throwsA(isA<Exception>()));
+    });
+    test("should return error on disconnect", () async {
+      when(googleSignInMock.currentUser).thenThrow(Exception());
       expect(googleAuthenticatorDataSource.disconnect(), throwsA(isA<Exception>()));
     });
   });
