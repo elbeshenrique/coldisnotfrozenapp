@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:guard_class/app/core/stores/auth_store.dart';
+import 'package:guard_class/app/core/stores/theme_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/widgets/air_conditioner_list_widget.dart';
 import 'package:asuka/asuka.dart' as asuka;
 
@@ -14,6 +16,7 @@ class AirConditionerPage extends StatefulWidget {
 
 class _AirConditionerPageState extends State<AirConditionerPage> {
   final _authStore = Modular.get<AuthStore>();
+  final _themeStore = Modular.get<ThemeStore>();
 
   _AirConditionerPageState();
 
@@ -32,6 +35,14 @@ class _AirConditionerPageState extends State<AirConditionerPage> {
         ],
       ),
       actions: <Widget>[
+        Observer(
+          builder: (_) => Switch(
+            onChanged: (bool value) {
+              _themeStore.setBrightness(value ? Brightness.dark : Brightness.light);
+            },
+            value: _themeStore.brightness == Brightness.dark,
+          ),
+        ),
         FlatButton(
           textTheme: ButtonTextTheme.accent,
           onPressed: () async {

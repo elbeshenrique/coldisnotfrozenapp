@@ -1,18 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:asuka/asuka.dart' as asuka show builder;
+import 'package:asuka/asuka.dart' as asuka;
+import 'package:guard_class/app/core/stores/theme_store.dart';
 import 'package:guard_class/app/core/theme/theme_data.dart';
 
-class AppWidget extends StatelessWidget {
+ThemeData lightTheme = ThemeDataConfiguration.instance.getLightTheme();
+ThemeData darkTheme = ThemeDataConfiguration.instance.getDarkTheme();
+
+class AppWidget extends StatefulWidget {
+  @override
+  _AppWidgetState createState() => _AppWidgetState();
+}
+
+class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
+  final _themeStore = Modular.get<ThemeStore>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    changeTheme();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    changeTheme();
+  }
+
+  changeTheme() {
+    final brightness = WidgetsBinding.instance.window.platformBrightness;
+    _themeStore.setBrightness(brightness);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: Modular.navigatorKey,
-      title: 'Cold Is Not Frozen',
-      theme: ThemeDataConfiguration.getThemeData(context),
-      initialRoute: Modular.initialRoute,
-      builder: asuka.builder,
-      onGenerateRoute: Modular.generateRoute,
+    return Observer(
+      builder: (_) => MaterialApp(
+        navigatorKey: Modular.navigatorKey,
+        title: 'Cold Is Not Frozen',
+        theme: _themeStore.brightness == Brightness.dark ? darkTheme : lightTheme,
+        initialRoute: Modular.initialRoute,
+        builder: asuka.builder,
+        onGenerateRoute: Modular.generateRoute,
+      ),
     );
   }
 }
