@@ -12,6 +12,18 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
   AirConditionerRepositoryImpl(this.datasource);
 
   @override
+  Future<Either<AirConditionerError, AirConditionerConfiguration>> getConfiguration(String id) async {
+    try {
+      final result = await datasource.getConfiguration(id);
+      return Right(result);
+    } on DatasourceError catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(RepositoryError(message: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<AirConditionerError, List<AirConditionerConfiguration>>> getConfigurationList() async {
     try {
       final result = await datasource.getConfigurationList();

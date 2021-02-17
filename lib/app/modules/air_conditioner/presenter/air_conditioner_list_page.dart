@@ -6,31 +6,20 @@ import 'package:guard_class/app/core/stores/theme_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/widgets/air_conditioner_list_widget.dart';
 import 'package:asuka/asuka.dart' as asuka;
 
-class AirConditionerPage extends StatefulWidget {
-  final String title;
-  const AirConditionerPage({Key key, this.title = "Cold Is Not Frozen"}) : super(key: key);
-
-  @override
-  _AirConditionerPageState createState() => _AirConditionerPageState();
-}
-
-class _AirConditionerPageState extends State<AirConditionerPage> {
+class AirConditionerListPage extends StatelessWidget {
   final _authStore = Modular.get<AuthStore>();
   final _themeStore = Modular.get<ThemeStore>();
 
-  _AirConditionerPageState();
+  final String title;
 
-  @override
-  initState() {
-    super.initState();
-  }
+  AirConditionerListPage({Key key, this.title = "Cold Is Not Frozen"}) : super(key: key);
 
   _buildAppBar() {
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(widget.title, textScaleFactor: 1.25),
+          Text(title, textScaleFactor: 1.25),
           Text(_authStore?.user?.email ?? "", textScaleFactor: _authStore?.user?.email == null ? 0 : 0.6)
         ],
       ),

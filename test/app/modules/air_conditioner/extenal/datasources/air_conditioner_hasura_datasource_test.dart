@@ -69,4 +69,21 @@ main() {
       expect(future, throwsA(isA<DatasourceError>()));
     });
   });
+
+  group("getConfiguration", () {
+    test("should return AirConditionerConfigurationModel", () async {
+      when(dioMock.post(any, data: anyNamed("data"), options: anyNamed("options"))).thenAnswer(
+        (_) async => Response(data: jsonDecode(airConditionerConfigurationListResponseData), statusCode: 200),
+      );
+      final result = await datasource.getConfiguration("id");
+      expect(result, isA<AirConditionerConfigurationModel>());
+    });
+    test("should return an error if statusCode is not 200", () async {
+      when(dioMock.post(any, data: anyNamed("data"), options: anyNamed("options"))).thenAnswer(
+        (_) async => Response(data: null, statusCode: 401),
+      );
+      final future = datasource.getConfiguration("id");
+      expect(future, throwsA(isA<DatasourceError>()));
+    });
+  });
 }

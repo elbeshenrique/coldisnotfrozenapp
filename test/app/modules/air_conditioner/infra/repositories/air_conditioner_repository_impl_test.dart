@@ -17,6 +17,27 @@ main() {
   final datasource = AirConditionerDataSourceMock();
   final repository = AirConditionerRepositoryImpl(datasource);
 
+
+  group("getConfiguration", () {
+    test("should return AirConditionerConfiguration", () async {
+      when(datasource.getConfiguration(any)).thenAnswer((_) async => AirConditionerConfigurationModel());
+      final result = await repository.getConfiguration("id");
+      expect(result | null, isA<AirConditionerConfiguration>());
+    });
+
+    test("should return an RepositoryError if the datasource fails", () async {
+      when(datasource.getConfiguration(any)).thenThrow(Exception());
+      final result = await repository.getConfiguration("id");
+      expect(result.fold(id, id), isA<RepositoryError>());
+    });
+
+    test("should return an DatasourceError if the datasource fails", () async {
+      when(datasource.getConfiguration(any)).thenThrow(DatasourceError());
+      final result = await repository.getConfiguration("id");
+      expect(result.fold(id, id), isA<DatasourceError>());
+    });
+  });
+
   group("getConfigurationList", () {
     test("should return a list of AirConditionerConfiguration", () async {
       when(datasource.getConfigurationList()).thenAnswer((_) async => <AirConditionerConfigurationModel>[]);
@@ -24,7 +45,7 @@ main() {
       expect(result | null, isA<List<AirConditionerConfiguration>>());
     });
 
-    test("should return an DatasourceError if the datasource fails", () async {
+    test("should return an RepositoryError if the datasource fails", () async {
       when(datasource.getConfigurationList()).thenThrow(Exception());
       final result = await repository.getConfigurationList();
       expect(result.fold(id, id), isA<RepositoryError>());
@@ -37,14 +58,14 @@ main() {
     });
   });
 
-  group("getConfigurationList", () {
+  group("getLastLog", () {
     test("should return a list of AirConditionerConfiguration", () async {
       when(datasource.getLastLog(any)).thenAnswer((_) async => AirConditionerLogModelMock());
       final result = await repository.getLastLog("id");
       expect(result | null, isA<AirConditionerLog>());
     });
 
-    test("should return an DatasourceError if the datasource fails", () async {
+    test("should return an RepositoryError if the datasource fails", () async {
       when(datasource.getLastLog(any)).thenThrow(Exception());
       final result = await repository.getLastLog("id");
       expect(result.fold(id, id), isA<RepositoryError>());

@@ -7,6 +7,7 @@ import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_cond
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_configuration_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class AirConditionerListWidget extends StatefulWidget {
@@ -42,21 +43,25 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       builder: (_) {
         var state = controller.state;
 
+        if (state is StartAirConditionerState) {
+          return Center();
+        }
+
+        if (state is LoadingAirConditionerState) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is SuccessAirConditionerState) {
+          return _buildAirConditionerListView(state.list);
+        }
+
         if (state is ErrorAirConditionerState) {
           return _buildError(state.error);
         }
 
-        if (state is StartAirConditionerState) {
-          return Center();
-        } else if (state is LoadingAirConditionerState) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is SuccessAirConditionerState) {
-          return _buildAirConditionerListView(state.list);
-        } else {
-          return Center();
-        }
+        return Center();
       },
     );
   }
@@ -106,90 +111,98 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
 
     return Container(
       padding: EdgeInsets.all(5),
-      child: Card(
-        elevation: 5,
-        child: ClipPath(
-          clipper: ShapeBorderClipper(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: leftCardBorderColor,
-                  width: 5,
-                ),
-              ),
+      child: GestureDetector(
+        onTap: () {
+          Modular.to.pushNamed(
+            "/air_conditioner/detail",
+            arguments: AirConditionerConfigurationViewModel.fromBase(airConditionerConfigurationModel)
+          );
+        },
+        child: Card(
+          elevation: 5,
+          child: ClipPath(
+            clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
             ),
             child: Container(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text(airConditionerConfigurationModel.id, style: TextStyle(fontSize: 9.0))
-                        ],
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.lightbulb_outline, color: Theme.of(context).accentColor, size: 17.0),
-                          SizedBox(width: 10.0),
-                          Text(isOnText, style: TextStyle(fontSize: 15.0)),
-                        ],
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.ac_unit, color: Theme.of(context).accentColor, size: 17.0),
-                          SizedBox(width: 10.0),
-                          Text(setpointText, style: TextStyle(fontSize: 15.0)),
-                        ],
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.settings_ethernet, color: Theme.of(context).accentColor, size: 17.0),
-                          SizedBox(width: 10.0),
-                          Text(offsetText, style: TextStyle(fontSize: 15.0)),
-                        ],
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.router, color: Theme.of(context).accentColor, size: 17.0),
-                          SizedBox(width: 10.0),
-                          Text(useRemoteText, style: TextStyle(fontSize: 15.0)),
-                        ],
-                      ),
-                      Visibility(
-                        visible: airConditionerLastLog?.createdAt != null,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10.0),
-                            Row(
-                              children: <Widget>[
-                                Text(airConditionerLastLog?.createdAt?.toString() ?? "", style: TextStyle(fontSize: 9.0))
-                              ],
-                            ),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: leftCardBorderColor,
+                    width: 5,
+                  ),
+                ),
+              ),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Text(airConditionerConfigurationModel.id, style: TextStyle(fontSize: 9.0))
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    temperatureText,
-                    style: TextStyle(
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.bold,
-                      color: temperatureColor,
+                        SizedBox(height: 10.0),
+                        Row(
+                          children: <Widget>[
+                            Icon(Icons.lightbulb_outline, color: Theme.of(context).accentColor, size: 17.0),
+                            SizedBox(width: 10.0),
+                            Text(isOnText, style: TextStyle(fontSize: 15.0)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          children: <Widget>[
+                            Icon(Icons.ac_unit, color: Theme.of(context).accentColor, size: 17.0),
+                            SizedBox(width: 10.0),
+                            Text(setpointText, style: TextStyle(fontSize: 15.0)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          children: <Widget>[
+                            Icon(Icons.settings_ethernet, color: Theme.of(context).accentColor, size: 17.0),
+                            SizedBox(width: 10.0),
+                            Text(offsetText, style: TextStyle(fontSize: 15.0)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          children: <Widget>[
+                            Icon(Icons.router, color: Theme.of(context).accentColor, size: 17.0),
+                            SizedBox(width: 10.0),
+                            Text(useRemoteText, style: TextStyle(fontSize: 15.0)),
+                          ],
+                        ),
+                        Visibility(
+                          visible: airConditionerLastLog?.createdAt != null,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10.0),
+                              Row(
+                                children: <Widget>[
+                                  Text(airConditionerLastLog?.createdAt?.toString() ?? "", style: TextStyle(fontSize: 9.0))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Text(
+                      temperatureText,
+                      style: TextStyle(
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
+                        color: temperatureColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

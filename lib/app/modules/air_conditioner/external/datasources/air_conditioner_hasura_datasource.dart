@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
@@ -16,6 +17,40 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   final BaseJsonSerializer jsonSerializer;
 
   AirConditionerHasuraDataSource(this.dio, this.jsonSerializer);
+
+  @override
+  Future<AirConditionerConfiguration> getConfiguration(String id) async {
+    final query = "query MyQuery(\$_eq: uuid = \"$id\"){airconditioner_configuration(where: {id: {_eq: \$_eq}}) {id offset setpoint useRemote isOn }}";
+    var response = await dio.post(
+      HASURA_URL,
+      data: {
+        HASURA_QUERY_KEY: query,
+      },
+      options: Options(
+        contentType: APPLICATION_JSON,
+        headers: {
+          HASURA_ADMIN_SECRET_KEY: HASURA_ADMIN_SECRET_VALUE
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> airConditionerConfigurationJsonMapList = response.data["data"]["airconditioner_configuration"];
+      return _parseConfiguration(airConditionerConfigurationJsonMapList);
+    } else {
+      throw DatasourceError(message: "Falha ao buscar as configurações.");
+    }
+  }
+
+  AirConditionerConfigurationModel _parseConfiguration(List<dynamic> jsonList) {
+    var list = jsonSerializer.adaptList<AirConditionerConfigurationModel>(jsonList);
+    if(list?.length > 0){
+      return list[0];
+    }
+
+    return null;
+  }
+
 
   @override
   Future<List<AirConditionerConfigurationModel>> getConfigurationList() async {
@@ -36,7 +71,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
       List<dynamic> airConditionerConfigurationJsonMapList = response.data["data"]["airconditioner_configuration"];
       return _parseConfigurationList(airConditionerConfigurationJsonMapList);
     } else {
-      throw DatasourceError(message: "Falha ao buscar a lista de dados de configuração de dispositivos.");
+      throw DatasourceError(message: "Falha ao buscar a lista de configurações.");
     }
   }
 
