@@ -1,17 +1,18 @@
 import 'package:async/async.dart';
-import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_item_model_list.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
 import 'package:mobx/mobx.dart';
 
-part 'ar_conditioner_store.g.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_item_model_list.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
 
-class AirConditionerStore = _AirConditionerStoreBase with _$AirConditionerStore;
+part 'ar_conditioner_list_controller.g.dart';
 
-abstract class _AirConditionerStoreBase with Store {
+class AirConditionerListController = _AirConditionerListControllerBase with _$AirConditionerListController;
+
+abstract class _AirConditionerListControllerBase with Store {
   final GetAirConditionerItemModelList getAirConditionerItemModelList;
   CancelableOperation cancellableOperation;
 
-  _AirConditionerStoreBase(this.getAirConditionerItemModelList) {
+  _AirConditionerListControllerBase(this.getAirConditionerItemModelList) {
     stateReaction(cancellableOperation);
   }
 

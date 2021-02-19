@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
+import 'package:intl/intl.dart';
+
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_list_controller.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_configuration_viewmodel.dart';
-import 'package:intl/intl.dart';
 
 class AirConditionerListWidget extends StatefulWidget {
   final String title;
@@ -18,7 +19,7 @@ class AirConditionerListWidget extends StatefulWidget {
   _AirConditionerListWidgetState createState() => _AirConditionerListWidgetState();
 }
 
-class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidget, AirConditionerStore> {
+class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidget, AirConditionerListController> {
   final NumberFormat _numberFormatter = NumberFormat("0.##", "pt-br");
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
@@ -113,10 +114,7 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       padding: EdgeInsets.all(5),
       child: GestureDetector(
         onTap: () {
-          Modular.to.pushNamed(
-            "/air_conditioner/detail",
-            arguments: AirConditionerConfigurationViewModel.fromBase(airConditionerConfigurationModel)
-          );
+          Modular.to.pushNamed("/air_conditioner/detail", arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel));
         },
         child: Card(
           elevation: 5,

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ar_conditioner_store.dart';
+part of 'ar_conditioner_list_controller.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,8 +8,9 @@ part of 'ar_conditioner_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
-  final _$stateAtom = Atom(name: '_AirConditionerStoreBase.state');
+mixin _$AirConditionerListController
+    on _AirConditionerListControllerBase, Store {
+  final _$stateAtom = Atom(name: '_AirConditionerListControllerBase.state');
 
   @override
   AirConditionerState get state {
@@ -24,17 +25,18 @@ mixin _$AirConditionerStore on _AirConditionerStoreBase, Store {
     });
   }
 
-  final _$_AirConditionerStoreBaseActionController =
-      ActionController(name: '_AirConditionerStoreBase');
+  final _$_AirConditionerListControllerBaseActionController =
+      ActionController(name: '_AirConditionerListControllerBase');
 
   @override
   dynamic setState(AirConditionerState value) {
-    final _$actionInfo = _$_AirConditionerStoreBaseActionController.startAction(
-        name: '_AirConditionerStoreBase.setState');
+    final _$actionInfo = _$_AirConditionerListControllerBaseActionController
+        .startAction(name: '_AirConditionerListControllerBase.setState');
     try {
       return super.setState(value);
     } finally {
-      _$_AirConditionerStoreBaseActionController.endAction(_$actionInfo);
+      _$_AirConditionerListControllerBaseActionController
+          .endAction(_$actionInfo);
     }
   }
 

@@ -2,13 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_modular/flutter_modular_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
 import 'package:guard_class/app/modules/air_conditioner/air_conditioner_module.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/repositories/air_conditioner_repository.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_conditioner_item_model_list.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/ar_conditioner_store.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_list_controller.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
-import 'package:mockito/mockito.dart';
 
 class DioMock extends Mock implements Dio {}
 
@@ -39,8 +40,8 @@ main() {
     final usecase = Modular.get<GetAirConditionerItemModelList>();
     expect(usecase, isA<GetAirConditionerItemModelList>());
   });
-  test("should retrieve AirConditionerStore instance", () {
-    final usecase = Modular.get<AirConditionerStore>();
-    expect(usecase, isA<AirConditionerStore>());
+  test("should retrieve AirConditionerListController instance", () {
+    final usecase = Modular.get<AirConditionerListController>();
+    expect(usecase, isA<AirConditionerListController>());
   });
 }
