@@ -15,15 +15,15 @@ abstract class _AirConditionerDetailViewModelBase with Store implements AirCondi
 
   @override
   @observable
-  num offset;
+  double offset;
   @action
-  changeOffset(num value) => offset = value;
+  changeOffset(double value) => offset = value;
 
   @override
   @observable
-  num setpoint;
+  double setpoint;
   @action
-  changeSetpoint(num value) => setpoint = value;
+  changeSetpoint(double value) => setpoint = value;
 
   @override
   @observable

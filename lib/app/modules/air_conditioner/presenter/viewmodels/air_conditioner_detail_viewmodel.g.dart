@@ -28,13 +28,13 @@ mixin _$AirConditionerDetailViewModel
   final _$offsetAtom = Atom(name: '_AirConditionerDetailViewModelBase.offset');
 
   @override
-  num get offset {
+  double get offset {
     _$offsetAtom.reportRead();
     return super.offset;
   }
 
   @override
-  set offset(num value) {
+  set offset(double value) {
     _$offsetAtom.reportWrite(value, super.offset, () {
       super.offset = value;
     });
@@ -44,13 +44,13 @@ mixin _$AirConditionerDetailViewModel
       Atom(name: '_AirConditionerDetailViewModelBase.setpoint');
 
   @override
-  num get setpoint {
+  double get setpoint {
     _$setpointAtom.reportRead();
     return super.setpoint;
   }
 
   @override
-  set setpoint(num value) {
+  set setpoint(double value) {
     _$setpointAtom.reportWrite(value, super.setpoint, () {
       super.setpoint = value;
     });
@@ -103,7 +103,7 @@ mixin _$AirConditionerDetailViewModel
   }
 
   @override
-  dynamic changeOffset(num value) {
+  dynamic changeOffset(double value) {
     final _$actionInfo = _$_AirConditionerDetailViewModelBaseActionController
         .startAction(name: '_AirConditionerDetailViewModelBase.changeOffset');
     try {
@@ -115,7 +115,7 @@ mixin _$AirConditionerDetailViewModel
   }
 
   @override
-  dynamic changeSetpoint(num value) {
+  dynamic changeSetpoint(double value) {
     final _$actionInfo = _$_AirConditionerDetailViewModelBaseActionController
         .startAction(name: '_AirConditionerDetailViewModelBase.changeSetpoint');
     try {

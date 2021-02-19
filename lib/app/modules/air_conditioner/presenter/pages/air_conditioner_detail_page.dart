@@ -1,11 +1,17 @@
+import 'dart:convert';
+
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_detail_viewmodel.dart';
+import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 class AirConditionerDetailPage extends StatefulWidget {
-  final AirConditionerDetailViewModel _airConditionerConfigurationViewModel;
+  final AirConditionerConfiguration _airConditionerConfigurationViewModel;
 
   AirConditionerDetailPage(this._airConditionerConfigurationViewModel, {Key key}) : super(key: key);
 
@@ -18,7 +24,7 @@ class AirConditionerDetailPage extends StatefulWidget {
 class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  final AirConditionerDetailViewModel _airConditionerDetailViewModel;
+  final AirConditionerConfiguration _airConditionerDetailViewModel;
   String _title;
 
   _AirConditionerDetailPageState(this._airConditionerDetailViewModel);
@@ -41,7 +47,11 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
         FlatButton(
           textTheme: ButtonTextTheme.accent,
           onPressed: () async {
-            Modular.to.pop();
+            _formKey.currentState.save();
+            print(_formKey.currentState.value);
+            final x = JsonMapper.fromMap<AirConditionerConfigurationModel>(_formKey.currentState.value);
+            print(x);
+            //Modular.to.pop();
           },
           child: Text("SALVAR"),
         ),
@@ -54,13 +64,19 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
       child: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(15),
-          child: Observer(
-            builder: (_) => Column(
+          child: FormBuilder(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.disabled,
+            initialValue: JsonMapper.toMap(_airConditionerDetailViewModel),
+            child: Column(
               children: [
-                ListTile(
-                  title: Text("Id"),
-                  subtitle: Text(_airConditionerDetailViewModel.id),
-                  contentPadding: EdgeInsets.zero,
+                FormBuilderField(
+                  name: "id",
+                  builder: (_) => ListTile(
+                    title: Text("Id"),
+                    subtitle: Text(_airConditionerDetailViewModel.id),
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ),
                 FormBuilderSlider(
                   name: "setpoint",
@@ -69,14 +85,15 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
                     labelText: "Temperatura Alvo",
                     border: InputBorder.none,
                   ),
-                  onChanged: _airConditionerDetailViewModel.changeSetpoint,
-                  initialValue: _airConditionerDetailViewModel.setpoint.toDouble(),
                   divisions: 40,
                   max: 30,
                   min: -10,
                   maxTextStyle: TextStyle(),
                   minTextStyle: TextStyle(),
                   textStyle: TextStyle(fontSize: 25),
+                  valueTransformer: (value) {
+                    print(value);
+                  },
                 ),
                 FormBuilderSlider(
                   name: "offset",
@@ -85,8 +102,6 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
                     labelText: "Variação",
                     border: InputBorder.none,
                   ),
-                  onChanged: _airConditionerDetailViewModel.changeOffset,
-                  initialValue: _airConditionerDetailViewModel.offset.toDouble(),
                   divisions: 4,
                   max: 1,
                   min: 0,
@@ -100,8 +115,6 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
                     border: InputBorder.none,
                   ),
                   title: Text("Ligar/Desligar"),
-                  onChanged: _airConditionerDetailViewModel.changeIsOn,
-                  initialValue: _airConditionerDetailViewModel.isOn,
                 ),
                 FormBuilderSwitch(
                   name: "useRemote",
@@ -109,17 +122,6 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
                     border: InputBorder.none,
                   ),
                   title: Text("Usar controle remoto"),
-                  onChanged: _airConditionerDetailViewModel.changeUseRemote,
-                  initialValue: _airConditionerDetailViewModel.useRemote,
-                ),
-                FormBuilderSwitch(
-                  name: "useRemote",
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  title: Text("Usar controle remoto"),
-                  onChanged: _airConditionerDetailViewModel.changeUseRemote,
-                  initialValue: _airConditionerDetailViewModel.useRemote,
                 ),
               ],
             ),

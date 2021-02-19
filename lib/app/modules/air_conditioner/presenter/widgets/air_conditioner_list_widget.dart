@@ -114,7 +114,11 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       padding: EdgeInsets.all(5),
       child: GestureDetector(
         onTap: () {
-          Modular.to.pushNamed("/air_conditioner/detail", arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel));
+          Modular.to.pushNamed(
+            "/air_conditioner/detail",
+            //arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel),
+            arguments: airConditionerConfigurationModel,
+          );
         },
         child: Card(
           elevation: 5,

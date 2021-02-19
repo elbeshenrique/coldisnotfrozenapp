@@ -11,10 +11,10 @@ class AirConditionerConfigurationModel implements AirConditionerConfiguration {
   final bool isOn;
   
   @override
-  final num offset;
+  final double offset;
   
   @override
-  final num setpoint;
+  final double setpoint;
   
   @override
   final bool useRemote;
