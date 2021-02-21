@@ -37,8 +37,8 @@ main() {
     expect(usecase, isA<AirConditionerRepository>());
   });
   test("should retrieve GetAirConditionerItemModelList instance", () {
-    final usecase = Modular.get<GetAirConditionerItemModelList>();
-    expect(usecase, isA<GetAirConditionerItemModelList>());
+    final usecase = Modular.get<BaseGetAirConditionerItemModelList>();
+    expect(usecase, isA<BaseGetAirConditionerItemModelList>());
   });
   test("should retrieve AirConditionerListController instance", () {
     final usecase = Modular.get<AirConditionerListController>();

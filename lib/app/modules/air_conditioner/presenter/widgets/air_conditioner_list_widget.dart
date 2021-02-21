@@ -23,20 +23,36 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
   final NumberFormat _numberFormatter = NumberFormat("0.##", "pt-br");
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
-  // @override
-  // initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
-  //     _loadInitialInfos();
-  //   });
-  // }
+  @override
+  initState() {
+    super.initState();
+    controller.refreshIndicatorKey = _refreshIndicatorKey;
 
-  // void _loadInitialInfos() {
-  //   _refreshIndicatorKey.currentState.show();
-  // }
+    WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
+      _fetchAndLoadAirConditionerData();
+    });
+  }
 
   Future<void> _fetchAndLoadAirConditionerData() {
     return controller.loadData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _fetchAndLoadAirConditionerData,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: _buildBasedOnState(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   _buildBasedOnState() {
@@ -49,9 +65,8 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
         }
 
         if (state is LoadingAirConditionerState) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          _refreshIndicatorKey?.currentState?.show();
+          return Center();
         }
 
         if (state is SuccessAirConditionerState) {
@@ -113,11 +128,8 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
     return Container(
       padding: EdgeInsets.all(5),
       child: GestureDetector(
-        onTap: () {
-          Modular.to.pushNamed(
-            "/air_conditioner/detail",
-            arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel),
-          );
+        onTap: () async {
+          await controller.openDetail(airConditionerConfigurationModel);
         },
         child: Card(
           elevation: 5,
@@ -212,38 +224,7 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: _fetchAndLoadAirConditionerData,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: _buildBasedOnState(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildError(AirConditionerError failure) {
-    // if (error is EmptyList) {
-    //   return Center(
-    //     child: Text('Nada encontrado'),
-    //   );
-    // } else if (error is ErrorSearch) {
-    //   return Center(
-    //     child: Text('Erro no github'),
-    //   );
-    // } else {
-    //   return Center(
-    //     child: Text('Erro interno'),
-    //   );
-    // }
     return Center(
       child: Text('Erro interno: ' + failure.message),
     );

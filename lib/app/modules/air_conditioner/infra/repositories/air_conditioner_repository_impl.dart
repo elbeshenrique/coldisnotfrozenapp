@@ -46,4 +46,16 @@ class AirConditionerRepositoryImpl implements AirConditionerRepository {
       return Left(RepositoryError(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<AirConditionerError, Unit>> saveConfiguration(AirConditionerConfiguration airConditionerConfiguration) async {
+    try {
+      await datasource.saveConfiguration(airConditionerConfiguration);
+      return Right(unit);
+    } on DatasourceError catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(RepositoryError(message: e.toString()));
+    }
+  }
 }

@@ -23,7 +23,7 @@ class BaseJsonSerializerMock extends Mock implements BaseJsonSerializer {}
 main() {
   final repositoryMock = AirConditionerRepositoryMock();
   final baseJsonSerializerMock = BaseJsonSerializerMock();
-  final usecase = GetAirConditionerItemModelListImpl(repositoryMock, baseJsonSerializerMock);
+  final usecase = GetAirConditionerItemModelList(repositoryMock, baseJsonSerializerMock);
 
   test("should return a list of AirConditionerItem", () async {
     when(repositoryMock.getConfigurationList()).thenAnswer(

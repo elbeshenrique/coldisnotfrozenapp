@@ -1,7 +1,7 @@
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/core/widgets/labeled_slider.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_detail_viewmodel.dart';
 
@@ -17,18 +17,16 @@ class AirConditionerDetailPage extends StatefulWidget {
 }
 
 class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
-  final _formKey = GlobalKey<FormBuilderState>();
   final BaseAirConditionerDetailViewModelAdapter viewModelAdapter = Modular.get<BaseAirConditionerDetailViewModelAdapter>();
+
   final AirConditionerDetailViewModel viewModel;
+  final String title;
 
-  String title;
-
-  _AirConditionerDetailPageState(this.viewModel);
+  _AirConditionerDetailPageState(this.viewModel, {this.title = "Configuração"});
 
   @override
   initState() {
     super.initState();
-    title = "Configuração";
   }
 
   _buildAppBar() {
@@ -43,11 +41,7 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
         FlatButton(
           textTheme: ButtonTextTheme.accent,
           onPressed: () async {
-            _formKey.currentState.save();
-            print(_formKey.currentState.value);
-            final viewModel = viewModelAdapter.fromMap(_formKey.currentState.value);
-            print(viewModel);
-            //Modular.to.pop();
+            Modular.to.pop(viewModel);
           },
           child: Text("SALVAR"),
         ),
@@ -56,71 +50,56 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
   }
 
   _buildBody() {
-    return Form(
-      child: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(15),
-          child: FormBuilder(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.disabled,
-            initialValue: viewModelAdapter.toMap(viewModel),
-            child: Column(
-              children: [
-                FormBuilderField(
-                  name: "id",
-                  builder: (_) => ListTile(
-                    title: Text("Id"),
-                    subtitle: Text(viewModel.id),
-                    contentPadding: EdgeInsets.zero,
-                  ),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(15),
+        child: Observer(
+          builder: (_) => Column(
+            children: [
+              ListTile(
+                title: Text("Id"),
+                subtitle: Text(viewModel.id),
+                contentPadding: EdgeInsets.zero,
+              ),
+              LabeledSlider(
+                decoration: InputDecoration(
+                  labelText: "Temperatura Alvo",
+                  border: InputBorder.none,
                 ),
-                FormBuilderSlider(
-                  name: "setpoint",
-                  label: "Temperatura Alvo",
-                  decoration: InputDecoration(
-                    labelText: "Temperatura Alvo",
-                    border: InputBorder.none,
-                  ),
-                  divisions: 40,
-                  max: 30,
-                  min: -10,
-                  maxTextStyle: TextStyle(),
-                  minTextStyle: TextStyle(),
-                  textStyle: TextStyle(fontSize: 25),
-                  valueTransformer: (value) {
-                    print(value);
-                  },
+                label: "Temperatura Alvo",
+                divisions: 40,
+                max: 30,
+                min: -10,
+                onChanged: viewModel.changeSetpoint,
+                value: viewModel.setpoint,
+                textStyle: TextStyle(fontSize: 25),
+              ),
+              LabeledSlider(
+                decoration: InputDecoration(
+                  labelText: "Variação",
+                  border: InputBorder.none,
                 ),
-                FormBuilderSlider(
-                  name: "offset",
-                  label: "Variação",
-                  decoration: InputDecoration(
-                    labelText: "Variação",
-                    border: InputBorder.none,
-                  ),
-                  divisions: 4,
-                  max: 1,
-                  min: 0,
-                  maxTextStyle: TextStyle(),
-                  minTextStyle: TextStyle(),
-                  textStyle: TextStyle(fontSize: 25),
-                ),
-                FormBuilderSwitch(
-                  name: "isOn",
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  title: Text("Ligar/Desligar"),
-                ),
-                FormBuilderSwitch(
-                  name: "useRemote",
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  title: Text("Usar controle remoto"),
-                ),
-              ],
-            ),
+                label: "Variação",
+                divisions: 4,
+                max: 1,
+                min: 0,
+                onChanged: viewModel.changeOffset,
+                value: viewModel.offset,
+                textStyle: TextStyle(fontSize: 25),
+              ),
+              SwitchListTile(
+                title: Text("Ligar/Desligar"),
+                contentPadding: EdgeInsets.zero,
+                onChanged: viewModel.changeIsOn,
+                value: viewModel.isOn,
+              ),
+              SwitchListTile(
+                title: Text("Usar controle remoto"),
+                contentPadding: EdgeInsets.zero,
+                onChanged: viewModel.changeUseRemote,
+                value: viewModel.useRemote,
+              ),
+            ],
           ),
         ),
       ),

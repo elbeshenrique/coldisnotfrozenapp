@@ -11,13 +11,13 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_list_controller.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
 
-class GetAirConditionerItemModelListMock extends Mock implements GetAirConditionerItemModelList {}
+class GetAirConditionerItemModelListMock extends Mock implements BaseGetAirConditionerItemModelList {}
 
 main() {
   var getAirConditionerItemModelListMock = GetAirConditionerItemModelListMock();
 
   initModule(AirConditionerModule(), changeBinds: [
-    Bind<GetAirConditionerItemModelList>((i) => getAirConditionerItemModelListMock),
+    Bind<BaseGetAirConditionerItemModelList>((i) => getAirConditionerItemModelListMock),
   ]);
 
   group("getData", () {

@@ -10,7 +10,7 @@ class AirConditionerRepositoryMock extends Mock implements AirConditionerReposit
 
 main() {
   final repository = AirConditionerRepositoryMock();
-  final usecase = GetAirConditionerConfigurationListImpl(repository);
+  final usecase = GetAirConditionerConfigurationList(repository);
 
   test("should return a list of AirConditionerConfiguration", () async {
     when(repository.getConfigurationList()).thenAnswer((_) async => Right(<AirConditionerConfiguration>[]));

@@ -10,15 +10,15 @@ import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditi
 import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_log_json_model.dart';
 import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
-abstract class GetAirConditionerItemModelList {
+abstract class BaseGetAirConditionerItemModelList {
   Future<Either<AirConditionerError, List<AirConditionerItem>>> call();
 }
 
-class GetAirConditionerItemModelListImpl implements GetAirConditionerItemModelList {
+class GetAirConditionerItemModelList implements BaseGetAirConditionerItemModelList {
   final AirConditionerRepository repository;
   final BaseJsonSerializer jsonSerializer;
 
-  GetAirConditionerItemModelListImpl(this.repository, this.jsonSerializer);
+  GetAirConditionerItemModelList(this.repository, this.jsonSerializer);
 
   @override
   Future<Either<AirConditionerError, List<AirConditionerItem>>> call() async {

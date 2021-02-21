@@ -7,4 +7,5 @@ abstract class AirConditionerRepository {
   Future<Either<AirConditionerError, AirConditionerConfiguration>> getConfiguration(String id);
   Future<Either<AirConditionerError, List<AirConditionerConfiguration>>> getConfigurationList();
   Future<Either<AirConditionerError, AirConditionerLog>> getLastLog(String id);
+  Future<Either<AirConditionerError, Unit>> saveConfiguration(AirConditionerConfiguration airConditionerConfiguration);
 }
