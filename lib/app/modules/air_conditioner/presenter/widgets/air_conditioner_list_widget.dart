@@ -116,8 +116,7 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
         onTap: () {
           Modular.to.pushNamed(
             "/air_conditioner/detail",
-            //arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel),
-            arguments: airConditionerConfigurationModel,
+            arguments: AirConditionerDetailViewModelAdapter().fromConfiguration(airConditionerConfigurationModel),
           );
         },
         child: Card(

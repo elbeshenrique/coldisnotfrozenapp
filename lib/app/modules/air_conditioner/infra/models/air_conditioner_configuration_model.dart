@@ -6,16 +6,16 @@ import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_cond
 class AirConditionerConfigurationModel implements AirConditionerConfiguration {
   @override
   final String id;
-  
+
   @override
   final bool isOn;
-  
+
   @override
-  final double offset;
-  
+  final num offset;
+
   @override
-  final double setpoint;
-  
+  final num setpoint;
+
   @override
   final bool useRemote;
 

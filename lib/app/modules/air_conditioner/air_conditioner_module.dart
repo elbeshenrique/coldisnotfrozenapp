@@ -6,6 +6,7 @@ import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_
 import 'package:guard_class/app/modules/air_conditioner/external/datasources/air_conditioner_hasura_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/datasources/air_conditioner_datasource.dart';
 import 'package:guard_class/app/modules/air_conditioner/infra/repositories/air_conditioner_repository_impl.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_list_controller.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/pages/air_conditioner_detail_page.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/pages/air_conditioner_list_page.dart';
@@ -20,6 +21,7 @@ class AirConditionerModule extends ChildModule {
         Bind<AirConditionerRepository>((i) => AirConditionerRepositoryImpl(i())),
         Bind<GetAirConditionerItemModelList>((i) => GetAirConditionerItemModelListImpl(i(), i())),
         Bind<AirConditionerListController>((i) => AirConditionerListController(i())),
+        Bind<BaseAirConditionerDetailViewModelAdapter>((i) => AirConditionerDetailViewModelAdapter()),
       ];
 
   @override

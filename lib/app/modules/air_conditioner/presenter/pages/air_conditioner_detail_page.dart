@@ -1,17 +1,12 @@
-import 'dart:convert';
-
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
-import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_configuration_model.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_detail_viewmodel.dart';
-import 'package:guard_class/app/modules/air_conditioner/utils/json_serializer.dart';
 
 class AirConditionerDetailPage extends StatefulWidget {
-  final AirConditionerConfiguration _airConditionerConfigurationViewModel;
+  final AirConditionerDetailViewModel _airConditionerConfigurationViewModel;
 
   AirConditionerDetailPage(this._airConditionerConfigurationViewModel, {Key key}) : super(key: key);
 
@@ -23,16 +18,17 @@ class AirConditionerDetailPage extends StatefulWidget {
 
 class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final BaseAirConditionerDetailViewModelAdapter viewModelAdapter = Modular.get<BaseAirConditionerDetailViewModelAdapter>();
+  final AirConditionerDetailViewModel viewModel;
 
-  final AirConditionerConfiguration _airConditionerDetailViewModel;
-  String _title;
+  String title;
 
-  _AirConditionerDetailPageState(this._airConditionerDetailViewModel);
+  _AirConditionerDetailPageState(this.viewModel);
 
   @override
   initState() {
     super.initState();
-    _title = "Configuração";
+    title = "Configuração";
   }
 
   _buildAppBar() {
@@ -40,7 +36,7 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(_title, textScaleFactor: 1.25)
+          Text(title, textScaleFactor: 1.25)
         ],
       ),
       actions: [
@@ -49,8 +45,8 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
           onPressed: () async {
             _formKey.currentState.save();
             print(_formKey.currentState.value);
-            final x = JsonMapper.fromMap<AirConditionerConfigurationModel>(_formKey.currentState.value);
-            print(x);
+            final viewModel = viewModelAdapter.fromMap(_formKey.currentState.value);
+            print(viewModel);
             //Modular.to.pop();
           },
           child: Text("SALVAR"),
@@ -67,14 +63,14 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
           child: FormBuilder(
             key: _formKey,
             autovalidateMode: AutovalidateMode.disabled,
-            initialValue: JsonMapper.toMap(_airConditionerDetailViewModel),
+            initialValue: viewModelAdapter.toMap(viewModel),
             child: Column(
               children: [
                 FormBuilderField(
                   name: "id",
                   builder: (_) => ListTile(
                     title: Text("Id"),
-                    subtitle: Text(_airConditionerDetailViewModel.id),
+                    subtitle: Text(viewModel.id),
                     contentPadding: EdgeInsets.zero,
                   ),
                 ),

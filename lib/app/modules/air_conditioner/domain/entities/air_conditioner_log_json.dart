@@ -1,19 +1,9 @@
 abstract class AirConditionerLogJson {
-  final double offset;
-  final num setpoint;
-  final bool isOn;
-  final bool useRemote;
-  final double localTemperature;
-  final num remoteTemperature;
-  final bool relayStatus;
-
-  AirConditionerLogJson({
-    this.offset,
-    this.setpoint,
-    this.isOn,
-    this.useRemote,
-    this.localTemperature,
-    this.remoteTemperature,
-    this.relayStatus,
-  });
+  num get offset;
+  num get setpoint;
+  bool get isOn;
+  bool get useRemote;
+  num get localTemperature;
+  num get remoteTemperature;
+  bool get relayStatus;
 }

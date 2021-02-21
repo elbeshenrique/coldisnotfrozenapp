@@ -2,12 +2,15 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_log.dart';
 
 @jsonSerializable
-class AirConditionerLogModel extends AirConditionerLog {
+class AirConditionerLogModel implements AirConditionerLog {
+  @override
+  final String createdAt;
+
+  @override
+  final String json;
+
   AirConditionerLogModel({
-    createdAt,
-    json,
-  }) : super(
-          createdAt: createdAt,
-          json: json,
-        );
+    this.createdAt,
+    this.json,
+  });
 }
