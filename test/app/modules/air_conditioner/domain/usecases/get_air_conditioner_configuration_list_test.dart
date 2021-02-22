@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_configuration.dart';
@@ -18,9 +20,9 @@ main() {
     expect(result | null, isA<List<AirConditionerConfiguration>>());
   });
 
-  test("should return a RepositoryError if the repository fails", () async {
+  test("should return a GetAirConditionerConfigurationListError if the repository fails", () async {
     when(repository.getConfigurationList()).thenThrow(Exception());
     final result = await usecase();
-    expect(result.fold(id, id), isA<RepositoryError>());
+    expect(result.fold(id, id), isA<GetAirConditionerConfigurationListError>());
   });
 }

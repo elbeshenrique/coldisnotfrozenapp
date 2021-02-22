@@ -20,9 +20,9 @@ main() {
     expect(result | null, isA<AirConditionerConfiguration>());
   });
 
-  test("should return a RepositoryError if the repository fails", () async {
+  test("should return a GetAirConditionerConfigurationError if the repository fails", () async {
     when(repository.getConfiguration(any)).thenThrow(Exception());
     final result = await usecase("id");
-    expect(result.fold(id, id), isA<RepositoryError>());
+    expect(result.fold(id, id), isA<GetAirConditionerConfigurationError>());
   });
 }
