@@ -39,13 +39,13 @@ main() {
     test('should change the state to SuccessAirConditionerState', () async {
       when(getAirConditionerItemModelListMock.call()).thenAnswer((_) async => Right(<AirConditionerItemModel>[]));
       var store = Modular.get<AirConditionerListController>();
-      await store.stateReaction();
+      await store.loadData();
       expect(store.state, isA<SuccessAirConditionerState>());
     });
     test('should change the state to ErrorAirConditionerState when usecase fails', () async {
       when(getAirConditionerItemModelListMock.call()).thenAnswer((_) async => Left(GetAirConditionerItemModelListError()));
       var store = Modular.get<AirConditionerListController>();
-      await store.stateReaction();
+      await store.loadData();
       expect(store.state, isA<ErrorAirConditionerState>());
     });
   });

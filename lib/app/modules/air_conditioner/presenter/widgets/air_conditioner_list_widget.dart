@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
@@ -20,29 +19,23 @@ class AirConditionerListWidget extends StatefulWidget {
 }
 
 class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidget, AirConditionerListController> {
-  final NumberFormat _numberFormatter = NumberFormat("0.##", "pt-br");
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  NumberFormat _numberFormatter;
 
   @override
   initState() {
     super.initState();
-    controller.refreshIndicatorKey = _refreshIndicatorKey;
-
     WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
-      _fetchAndLoadAirConditionerData();
+      controller.refreshIndicatorKey.currentState.show();
     });
-  }
-
-  Future<void> _fetchAndLoadAirConditionerData() {
-    return controller.loadData();
   }
 
   @override
   Widget build(BuildContext context) {
+    _numberFormatter = _numberFormatter ?? Modular.get<NumberFormat>();
     return Center(
       child: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: _fetchAndLoadAirConditionerData,
+        key: controller.refreshIndicatorKey,
+        onRefresh: controller.loadData,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -65,7 +58,6 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
         }
 
         if (state is LoadingAirConditionerState) {
-          _refreshIndicatorKey?.currentState?.show();
           return Center();
         }
 

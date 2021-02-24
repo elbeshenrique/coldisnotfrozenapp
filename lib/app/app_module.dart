@@ -5,9 +5,11 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import 'package:guard_class/app/app_widget.dart';
 import 'package:guard_class/app/core/stores/auth_store.dart';
+import 'package:guard_class/app/core/stores/localization_store.dart';
 import 'package:guard_class/app/core/stores/theme_store.dart';
 import 'package:guard_class/app/modules/air_conditioner/air_conditioner_module.dart';
 import 'package:guard_class/app/modules/login/login_module.dart';
+import 'package:intl/intl.dart';
 
 import 'core/pages/spash_screen_page.dart';
 
@@ -19,6 +21,11 @@ class AppModule extends MainModule {
         Bind<Connectivity>((i) => Connectivity()),
         $AuthStore,
         Bind<ThemeStore>((i) => ThemeStore()),
+        Bind<LocalizationStore>((i) => LocalizationStore()),
+        Bind<NumberFormat>((i) {
+          final localizationStore = Modular.get<LocalizationStore>();
+          return NumberFormat.decimalPattern(localizationStore.deviceLocale.toString());
+        }),
       ];
 
   @override

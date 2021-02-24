@@ -2,6 +2,7 @@ import 'package:async/async.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/material/refresh_indicator.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/modules/air_conditioner/infra/models/air_conditioner_item_model.dart';
 import 'package:mobx/mobx.dart';
 
 import 'package:guard_class/app/core/extensions/dartz_extensions.dart';
@@ -23,7 +24,7 @@ abstract class _AirConditionerListControllerBase with Store {
   final BaseSaveAirConditionerConfiguration saveAirConditionerConfiguration;
 
   CancelableOperation cancellableOperation;
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
   _AirConditionerListControllerBase(this.getAirConditionerItemModelList, this.saveAirConditionerConfiguration);
 
@@ -33,22 +34,16 @@ abstract class _AirConditionerListControllerBase with Store {
   @action
   setState(AirConditionerState value) => state = value;
 
-  Future stateReaction([CancelableOperation cancellableOperation]) async {
+  Future loadData([CancelableOperation cancellableOperation]) async {
     await cancellableOperation?.cancel();
     cancellableOperation = CancelableOperation<AirConditionerState>.fromFuture(getData());
-
     setState(LoadingAirConditionerState());
-
-    setState(await cancellableOperation.valueOrCancellation(LoadingAirConditionerState()));
+    setState(await cancellableOperation.valueOrCancellation(StartAirConditionerState()));
   }
 
   Future<AirConditionerState> getData() async {
     var result = await getAirConditionerItemModelList();
     return result.fold((l) => ErrorAirConditionerState(l), (r) => SuccessAirConditionerState(r));
-  }
-
-  Future loadData() async {
-    setState(await getData());
   }
 
   Future openDetail(AirConditionerConfiguration airConditionerConfigurationModel) async {
@@ -67,6 +62,16 @@ abstract class _AirConditionerListControllerBase with Store {
       throw saveConfigurationEither.getLeft();
     }
 
-    loadData();
+    if (state is SuccessAirConditionerState) {
+      final model = ((state as SuccessAirConditionerState).list[1] as AirConditionerItemModel);
+      (state as SuccessAirConditionerState).list[1] = AirConditionerItemModel(
+        lastLog: model.lastLog,
+        lastLogJson: model.lastLogJson,
+        configuration: configurationModel
+      );
+      setState(state);
+    }
+
+    refreshIndicatorKey.currentState.show();
   }
 }

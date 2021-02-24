@@ -1,7 +1,10 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:asuka/asuka.dart' as asuka;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/core/stores/localization_store.dart';
 
 import 'package:guard_class/app/core/stores/theme_store.dart';
 import 'package:guard_class/app/core/theme/theme_data_configuration.dart';
@@ -16,6 +19,7 @@ class AppWidget extends StatefulWidget {
 
 class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
   final _themeStore = Modular.get<ThemeStore>();
+  final _localizationStore = Modular.get<LocalizationStore>();
 
   @override
   void initState() {
@@ -50,6 +54,19 @@ class _AppWidgetState extends State<AppWidget> with WidgetsBindingObserver {
         initialRoute: Modular.initialRoute,
         builder: asuka.builder,
         onGenerateRoute: Modular.generateRoute,
+        localeResolutionCallback: (deviceLocale, supportedLocales) {
+          _localizationStore.setDeviceLocale(deviceLocale);
+          return deviceLocale;
+        },
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('pt' 'BR'),
+          Locale('en' 'US'),
+        ],
       ),
     );
   }
