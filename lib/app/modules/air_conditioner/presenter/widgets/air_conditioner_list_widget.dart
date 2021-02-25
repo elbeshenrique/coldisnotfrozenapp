@@ -35,7 +35,7 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
     return Center(
       child: RefreshIndicator(
         key: controller.refreshIndicatorKey,
-        onRefresh: controller.loadData,
+        onRefresh: controller.onRefreshIndicator,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -54,10 +54,6 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
         var state = controller.state;
 
         if (state is StartAirConditionerState) {
-          return Center();
-        }
-
-        if (state is LoadingAirConditionerState) {
           return Center();
         }
 
@@ -121,7 +117,7 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       padding: EdgeInsets.all(5),
       child: GestureDetector(
         onTap: () async {
-          await controller.openDetail(airConditionerConfigurationModel);
+          await controller.openDetailForResult(airConditionerConfigurationModel);
         },
         child: Card(
           elevation: 5,
