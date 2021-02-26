@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import 'package:guard_class/app/core/widgets/labeled_slider.dart';
+import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_detail_controller.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_detail_states.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/viewmodels/air_conditioner_detail_viewmodel.dart';
 
 class AirConditionerDetailPage extends StatefulWidget {
@@ -16,7 +20,7 @@ class AirConditionerDetailPage extends StatefulWidget {
   }
 }
 
-class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
+class _AirConditionerDetailPageState extends ModularState<AirConditionerDetailPage, AirConditionerDetailController> {
   final BaseAirConditionerDetailViewModelAdapter viewModelAdapter = Modular.get<BaseAirConditionerDetailViewModelAdapter>();
 
   final AirConditionerDetailViewModel viewModel;
@@ -27,6 +31,14 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
   @override
   initState() {
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: _buildBodyBasedOnState(),
+    );
   }
 
   _buildAppBar() {
@@ -41,7 +53,7 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
         FlatButton(
           textTheme: ButtonTextTheme.accent,
           onPressed: () async {
-            Modular.to.pop(viewModel);
+            controller.save(viewModel);
           },
           child: Text("SALVAR"),
         ),
@@ -49,7 +61,26 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
     );
   }
 
-  _buildBody() {
+  _buildBodyBasedOnState() {
+    return Observer(
+      builder: (_) {
+        var state = controller.state;
+
+        if (state is LoadingAirConditionerDetailState) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (state is ErrorAirConditionerDetailState) {
+          return _buildError(state.error);
+        }
+
+        return _buildForm();
+        ;
+      },
+    );
+  }
+
+  _buildForm() {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(15),
@@ -106,11 +137,9 @@ class _AirConditionerDetailPageState extends State<AirConditionerDetailPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+  Widget _buildError(AirConditionerError failure) {
+    return Center(
+      child: Text('Erro interno: ' + failure.message),
     );
   }
 }

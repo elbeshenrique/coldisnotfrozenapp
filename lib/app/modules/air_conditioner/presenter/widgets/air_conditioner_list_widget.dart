@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:guard_class/app/core/widgets/icon_text.dart';
 import 'package:intl/intl.dart';
 
 import 'package:guard_class/app/modules/air_conditioner/domain/entities/air_conditioner_item.dart';
 import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/controllers/ar_conditioner_list_controller.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_list_states.dart';
 
 class AirConditionerListWidget extends StatefulWidget {
-  final String title;
-  const AirConditionerListWidget({Key key, this.title = "Cold Is Not Frozen"}) : super(key: key);
+  const AirConditionerListWidget({Key key}) : super(key: key);
 
   @override
   _AirConditionerListWidgetState createState() => _AirConditionerListWidgetState();
@@ -53,15 +53,11 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
       builder: (_) {
         var state = controller.state;
 
-        if (state is StartAirConditionerState) {
-          return Center();
-        }
-
-        if (state is SuccessAirConditionerState) {
+        if (state is SuccessAirConditionerListState) {
           return _buildAirConditionerListView(state.list);
         }
 
-        if (state is ErrorAirConditionerState) {
+        if (state is ErrorAirConditionerListState) {
           return _buildError(state.error);
         }
 
@@ -85,6 +81,8 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
     var airConditionerLastLogJson = airConditionerItemModel.lastLogJson;
 
     String isOnText = "";
+    String isOnSubText = "";
+
     String offsetText = "";
     String setpointText = "";
     String useRemoteText = "";
@@ -94,19 +92,21 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
     double temperature = 0;
 
     if (airConditionerLastLogJson != null) {
-      isOnText = airConditionerLastLogJson?.isOn == true ? "Ligado" : "Desligado";
-      offsetText = "${_numberFormatter.format(airConditionerLastLogJson?.offset)}ºC de variação";
-      setpointText = "${_numberFormatter.format(airConditionerLastLogJson?.setpoint)}ºC de temperatura alvo";
-      useRemoteText = airConditionerLastLogJson?.useRemote == true ? "Usa remoto" : "Não usa remoto";
-      temperatureText = "${_numberFormatter.format(airConditionerLastLogJson?.localTemperature)}ºC";
+      isOnText = airConditionerLastLogJson.isOn == true ? "Ligado" : "Desligado";
+      isOnSubText = "(${(airConditionerConfigurationModel.isOn == true ? "Ligar" : "Desligar")})";
+
+      offsetText = "${_numberFormatter.format(airConditionerLastLogJson.offset)}ºC de variação";
+      setpointText = "${_numberFormatter.format(airConditionerLastLogJson.setpoint)}ºC de temperatura alvo";
+      useRemoteText = airConditionerLastLogJson.useRemote == true ? "Usa remoto" : "Não usa remoto";
+      temperatureText = "${_numberFormatter.format(airConditionerLastLogJson.localTemperature)}ºC";
 
       isOn = airConditionerLastLogJson.isOn;
       temperature = airConditionerLastLogJson.localTemperature;
     } else {
-      isOnText = airConditionerConfigurationModel?.isOn == true ? "Ligar" : "Desligar";
-      offsetText = "Com ${_numberFormatter.format(airConditionerConfigurationModel?.offset)}ºC de variação";
-      setpointText = "Parar em ${_numberFormatter.format(airConditionerConfigurationModel?.setpoint)}ºC de temperatura";
-      useRemoteText = airConditionerConfigurationModel?.useRemote == true ? "Não usar remoto" : "Usar remoto";
+      isOnText = airConditionerConfigurationModel.isOn == true ? "Ligar" : "Desligar";
+      offsetText = "Com ${_numberFormatter.format(airConditionerConfigurationModel.offset)}ºC de variação";
+      setpointText = "Parar em ${_numberFormatter.format(airConditionerConfigurationModel.setpoint)}ºC de temperatura";
+      useRemoteText = airConditionerConfigurationModel.useRemote == true ? "Não usar remoto" : "Usar remoto";
       temperatureText = "";
     }
 
@@ -148,37 +148,13 @@ class _AirConditionerListWidgetState extends ModularState<AirConditionerListWidg
                           ],
                         ),
                         SizedBox(height: 10.0),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.lightbulb_outline, color: Theme.of(context).accentColor, size: 17.0),
-                            SizedBox(width: 10.0),
-                            Text(isOnText, style: TextStyle(fontSize: 15.0)),
-                          ],
-                        ),
+                        IconText(Icons.lightbulb_outline, isOnText),
                         SizedBox(height: 10.0),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.ac_unit, color: Theme.of(context).accentColor, size: 17.0),
-                            SizedBox(width: 10.0),
-                            Text(setpointText, style: TextStyle(fontSize: 15.0)),
-                          ],
-                        ),
+                        IconText(Icons.ac_unit, setpointText),
                         SizedBox(height: 10.0),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.settings_ethernet, color: Theme.of(context).accentColor, size: 17.0),
-                            SizedBox(width: 10.0),
-                            Text(offsetText, style: TextStyle(fontSize: 15.0)),
-                          ],
-                        ),
+                        IconText(Icons.settings_ethernet, offsetText),
                         SizedBox(height: 10.0),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.router, color: Theme.of(context).accentColor, size: 17.0),
-                            SizedBox(width: 10.0),
-                            Text(useRemoteText, style: TextStyle(fontSize: 15.0)),
-                          ],
-                        ),
+                        IconText(Icons.router, useRemoteText),
                         Visibility(
                           visible: airConditionerLastLog?.createdAt != null,
                           child: Column(

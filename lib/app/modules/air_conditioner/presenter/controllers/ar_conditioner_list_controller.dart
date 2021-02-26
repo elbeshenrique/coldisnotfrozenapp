@@ -10,7 +10,7 @@ import 'package:guard_class/app/modules/air_conditioner/domain/usecases/get_air_
 import 'package:guard_class/app/modules/air_conditioner/domain/usecases/save_air_conditioner_configuration.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_configuration_adapter.dart';
 import 'package:guard_class/app/modules/air_conditioner/presenter/adapters/air_conditioner_detail_view_model_adapter.dart';
-import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_states.dart';
+import 'package:guard_class/app/modules/air_conditioner/presenter/states/air_conditioner_list_states.dart';
 
 part 'ar_conditioner_list_controller.g.dart';
 
@@ -29,21 +29,21 @@ abstract class _AirConditionerListControllerBase with Store {
   _AirConditionerListControllerBase(this.getAirConditionerItemModelList, this.saveAirConditionerConfiguration);
 
   @observable
-  AirConditionerState state = StartAirConditionerState();
+  AirConditionerListState state = StartAirConditionerListState();
 
   @action
-  setState(AirConditionerState value) => state = value;
+  setState(AirConditionerListState value) => state = value;
 
   Future loadData([CancelableOperation cancellableOperation]) async {
     await cancellableOperation?.cancel();
-    cancellableOperation = CancelableOperation<AirConditionerState>.fromFuture(getData());
-    setState(LoadingAirConditionerState());
-    setState(await cancellableOperation.valueOrCancellation(StartAirConditionerState()));
+    cancellableOperation = CancelableOperation<AirConditionerListState>.fromFuture(getData());
+    setState(LoadingAirConditionerListState());
+    setState(await cancellableOperation.valueOrCancellation(StartAirConditionerListState()));
   }
 
-  Future<AirConditionerState> getData() async {
+  Future<AirConditionerListState> getData() async {
     var result = await getAirConditionerItemModelList();
-    return result.fold((l) => ErrorAirConditionerState(l), (r) => SuccessAirConditionerState(r));
+    return result.fold((l) => ErrorAirConditionerListState(l), (r) => SuccessAirConditionerListState(r));
   }
 
   Future<void> onRefreshIndicator() async {
@@ -56,19 +56,13 @@ abstract class _AirConditionerListControllerBase with Store {
   }
 
   Future openDetailForResult(AirConditionerConfiguration airConditionerConfigurationModel) async {
-    final detailViewModel = await Modular.to.pushNamed(
+    final configuration = await Modular.to.pushNamed(
       "/air_conditioner/detail",
       arguments: detailViewModelAdapter.fromConfiguration(airConditionerConfigurationModel),
     );
 
-    if (detailViewModel == null) {
+    if (configuration == null) {
       return;
-    }
-
-    final configurationModel = configurationAdapter.fromDetailViewModel(detailViewModel);
-    final saveConfigurationEither = await saveAirConditionerConfiguration(configurationModel);
-    if (saveConfigurationEither.isLeft()) {
-      throw saveConfigurationEither.getLeft();
     }
 
     refreshIndicatorKey.currentState.show();

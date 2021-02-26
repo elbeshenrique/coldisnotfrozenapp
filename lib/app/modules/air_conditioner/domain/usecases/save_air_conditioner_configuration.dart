@@ -4,7 +4,7 @@ import 'package:guard_class/app/modules/air_conditioner/domain/errors/errors.dar
 import 'package:guard_class/app/modules/air_conditioner/domain/repositories/air_conditioner_repository.dart';
 
 abstract class BaseSaveAirConditionerConfiguration {
-  Future<Either<AirConditionerError, Object>> call(AirConditionerConfiguration airConditionerConfiguration);
+  Future<Either<AirConditionerError, AirConditionerConfiguration>> call(AirConditionerConfiguration airConditionerConfiguration);
 }
 
 class SaveAirConditionerConfiguration implements BaseSaveAirConditionerConfiguration {
@@ -13,7 +13,7 @@ class SaveAirConditionerConfiguration implements BaseSaveAirConditionerConfigura
   SaveAirConditionerConfiguration(this.repository);
 
   @override
-  Future<Either<AirConditionerError, Unit>> call(AirConditionerConfiguration airConditionerConfiguration) async {
+  Future<Either<AirConditionerError, AirConditionerConfiguration>> call(AirConditionerConfiguration airConditionerConfiguration) async {
     try {
       return repository.saveConfiguration(airConditionerConfiguration);
     } catch (e) {

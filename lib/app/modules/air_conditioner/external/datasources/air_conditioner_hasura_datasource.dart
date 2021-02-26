@@ -114,7 +114,7 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
   }
 
   @override
-  Future saveConfiguration(AirConditionerConfiguration airConditionerConfiguration) async {
+  Future<AirConditionerConfiguration> saveConfiguration(AirConditionerConfiguration airConditionerConfiguration) async {
     final mutation = "mutation MyMutation(\$isOn: Boolean = ${airConditionerConfiguration.isOn}, \$offset: Float = ${airConditionerConfiguration.offset}, \$setpoint: Float = ${airConditionerConfiguration.setpoint}, \$useRemote: Boolean = ${airConditionerConfiguration.useRemote}) { update_airconditioner_configuration_by_pk(pk_columns: {id: \"${airConditionerConfiguration.id}\"}, _set: {isOn: \$isOn, offset: \$offset, setpoint: \$setpoint, useRemote: \$useRemote}) { id }}";
     var response = await dio.post(
       HASURA_URL,
@@ -130,8 +130,8 @@ class AirConditionerHasuraDataSource implements AirConditionerDataSource {
     );
 
     if (response.statusCode == 200) {
-      String mutationId = response.data["data"]["update_airconditioner_configuration_by_pk"]["id"];
-      return mutationId;
+      final String mutationId = response.data["data"]["update_airconditioner_configuration_by_pk"]["id"];
+      return airConditionerConfiguration;
     } else {
       throw DatasourceError(message: "Falha ao salvar a configuração de Id ${airConditionerConfiguration.id}.");
     }
