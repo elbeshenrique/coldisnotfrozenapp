@@ -1,11 +1,8 @@
-# Login with Firebase and Clean Dart
+# Cold Is Not Frozen
 
-Login with email and phone number using firebase auth, MobX, Modular and [Clean Dart](https://github.com/Flutterando/Clean-Dart).
+The mobile front-end for an application focused on registering the temperature of isolated ambients like bedrooms, refrigerators and swimming pools.
 
-## Getting Started
-
-- Create a Firebase Project.
-- Enable Authetication by Smartphone and email 
-- Registre your bundle_id Android and iOS (Not forget SHA1)
-- Download google-services.json
-- flutter run!!
+- The data is collected through an Arduino based hardware with internet connection, using a temperature sensor;
+- The data is sent to a Hasura Postgresql database on the cloud;
+- The data is fetched using Hasura's GraphQL endpoint and exhibited in this mobile application;
+- This project utilizes Clean Architecture concepts.
